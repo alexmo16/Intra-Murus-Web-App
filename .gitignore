@@ -1,0 +1,24 @@
+# Add any directories, files, or patterns you don't want to be tracked by version 
+*.m~
+*.asv
+*.aux
+*.bbl
+*.blg
+*.log
+*.gz
+*.toc
+*.log
+*.pdf
+*.py~
+*.db
+*.crf
+*.d
+*.axf
+*.htm
+*.hex
+*.htm
+*.lnp
+*.map
+*.dep
+*.lst
+
