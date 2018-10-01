@@ -1,6 +1,6 @@
 lint:
   image: node:6
-  stage: lint
+  stage: build
   script:
     - vue-cli-service lint
   artifacts:
