@@ -2,7 +2,7 @@ lint:
   image: node:6
   stage: build
   script:
-    - vue-cli-service lint
+    - npm run lint
   artifacts:
     expire_in: 1 week
     paths:
@@ -12,7 +12,7 @@ build site:
   image: node:6
   stage: build
   script:
-    - npm install --progress=false
+    - npm install
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -23,5 +23,5 @@ unit test:
   image: node:6
   stage: test
   script:
-    - npm install --progress=false
+    - npm install
     - npm run test:unit
