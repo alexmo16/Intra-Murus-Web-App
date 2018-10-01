@@ -1,5 +1,5 @@
 lint:
-  image: node:6
+  image: node:latest
   stage: build
   script:
     - npm install
@@ -10,7 +10,7 @@ lint:
       - dist
 
 build site:
-  image: node:6
+  image: node:latest
   stage: build
   script:
     - npm install
@@ -21,7 +21,7 @@ build site:
       - dist
 
 unit test:
-  image: node:6
+  image: node:latest
   stage: test
   script:
     - npm install
