@@ -1,8 +1,10 @@
+before_script:
+  - npm update
+
 lint:
   image: node:latest
   stage: build
   script:
-    - npm install
     - npm run lint
   artifacts:
     expire_in: 1 week
