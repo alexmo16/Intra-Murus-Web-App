@@ -24,3 +24,7 @@ npm run lint
 ```
 npm run test:unit
 ```
+
+# Nice links
+
+- https://bootstrap-vue.js.org/docs/
