@@ -1,5 +1,5 @@
 before_script:
-  - npm update
+  - npm install
 
 lint:
   image: node:latest
