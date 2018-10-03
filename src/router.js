@@ -3,10 +3,9 @@ import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Error404 from "./views/Error404.vue";
-import axios from "axios";
+//import axios from "axios";
 import vueCookie from "vue-cookie";
 
-Vue.use(axios);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
