@@ -28,3 +28,4 @@ npm run test:unit
 # Nice links
 
 - https://bootstrap-vue.js.org/docs/
+- https://vuejs.org/v2/guide/
