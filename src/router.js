@@ -3,8 +3,7 @@ import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Error404 from "./views/Error404.vue";
-//import axios from "axios";
-import vueCookie from "vue-cookie";
+import axios from "axios";
 
 Vue.use(VueRouter);
 
@@ -37,11 +36,18 @@ const router = new VueRouter({
 ** next: function must be called to resolve the hook, used for redirect/error/move on next
 */
 router.beforeEach((to, from, next) => {
-  if (to.query && to.query.ticket) {
-    vueCookie.set("ticket", to.query.ticket);
-    next("/");
-  }
-  next();
+  axios
+    .get("/api")
+    .then(response => {
+      if (response.request.responseURL.includes("https://cas.usherbrooke.ca")) {
+        window.location = response.request.responseURL;
+      }
+      next();
+    })
+    .catch(error => {
+      console.log(error);
+      next();
+    });
 });
 
 export default router;
