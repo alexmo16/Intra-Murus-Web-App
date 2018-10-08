@@ -1,6 +1,6 @@
 # Webapp
 
-nom de domaine "localhost:8081"
+nom de domaine local "localhost:8081"
 
 # webapp commands
 
