@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Error404 from "./views/Error404.vue";
+import Error500 from "./views/Error500.vue";
+
 import axios from "axios";
 import vueCookies from "vue-cookies";
 
@@ -28,6 +30,11 @@ const router = new VueRouter({
       redirect: { name: "home" }
     },
     {
+      path: "/internal-error",
+      name: "500",
+      component: Error500
+    },
+    {
       path: "*",
       name: "404",
       component: Error404
@@ -35,21 +42,26 @@ const router = new VueRouter({
   ]
 });
 
-let __redirectLogin = function(backurl, callback) {
+let __redirectLogin = function(backurl, next) {
   let loginRoute = `/bs/login?backurl=${backurl}`;
   axios
     .get(loginRoute)
     .then(response => {
-      let isCASRedirection = response.request.responseURL.includes(
-        "https://cas.usherbrooke.ca"
-      );
-      if (isCASRedirection) {
-        window.location = response.request.responseURL;
+      if (response) {
+        let isCASRedirection = response.request.responseURL.includes(
+          "https://cas.usherbrooke.ca"
+        );
+        if (isCASRedirection) {
+          window.location = response.request.responseURL;
+        }
+      } else {
+        throw new Error();
       }
-      callback();
+
+      next();
     })
-    .catch(error => {
-      return Promise.reject(error);
+    .catch(() => {
+      next("/internal-error");
     });
 };
 
@@ -60,7 +72,7 @@ let __redirectLogin = function(backurl, callback) {
 */
 router.beforeEach((to, from, next) => {
   let isJwt = vueCookies.isKey("jwt");
-  if (isJwt == null) {
+  if (!isJwt && to.path != "/internal-error") {
     __redirectLogin("http%3a%2f%2flocalhost:8081%2f", next);
   } else {
     next();
@@ -76,7 +88,6 @@ axios.interceptors.request.use(
     return config;
   },
   function(error) {
-    // Do something with request error
     return Promise.reject(error);
   }
 );
@@ -94,8 +105,11 @@ axios.interceptors.response.use(
         vueCookies.remove(key);
       });
       __redirectLogin("http%3a%2f%2flocalhost:8081%2f", function() {});
+    } else if (error.response && error.response.status == 500) {
+      router.push("/internal-error");
+    } else {
+      Promise.reject(error);
     }
-    return Promise.reject(error);
   }
 );
 

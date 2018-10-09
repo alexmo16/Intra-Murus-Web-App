@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navbar :firstname="username"></navbar>
+    <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
     <router-view/>
   </div>
 </template>
@@ -20,18 +20,20 @@ export default {
     navbar
   },
   beforeCreate() {
-    axios
-      .get("/bs/api/membres")
-      .then(response => {
-        if (response.data && response.data.length > 0) {
-          // TODO: l'api doit changer pour retourner les informations du current user.
-          // alors il faudra utiliser une nouvelle route.
-          this.username = response.data[0].prenom;
-        }
-      })
-      .catch(error => {
-        Promise.reject(error);
-      });
+    if (["500", "404"].indexOf(this.$route.name) == -1) {
+      axios
+        .get("/bs/api/membres")
+        .then(response => {
+          if (response && response.data && response.data.length > 0) {
+            // TODO: l'api doit changer pour retourner les informations du current user.
+            // alors il faudra utiliser une nouvelle route.
+            this.username = response.data[0].prenom;
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
+    }
   }
 };
 </script>
