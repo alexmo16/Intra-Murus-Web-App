@@ -9,6 +9,7 @@ module.exports = {
           "^/bs": ""
         }
       }
-    }
+    },
+    port: 8081
   }
 };
