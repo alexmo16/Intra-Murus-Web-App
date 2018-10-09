@@ -23,7 +23,7 @@ export default {
     axios
       .get("/bs/api/membres")
       .then(response => {
-        if (response.data) {
+        if (response.data && response.data.length > 0) {
           // TODO: l'api doit changer pour retourner les informations du current user.
           // alors il faudra utiliser une nouvelle route.
           this.username = response.data[0].prenom;
