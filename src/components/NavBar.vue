@@ -16,9 +16,8 @@
           <b-nav-item-dropdown right>
             <!-- Using button-content slot -->
             <template slot="button-content">
-              <em>User</em>
+              <em>{{ firstname }}</em>
             </template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
             <b-dropdown-item href="#">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -34,7 +33,14 @@ import bNavbarBrand from "bootstrap-vue/es/components/navbar/navbar-brand";
 import bNavbarToggle from "bootstrap-vue/es/components/navbar/navbar-toggle";
 
 export default {
-  name: "NavBar",
+  name: "navbar",
+  props: {
+    firstname: {
+      type: String,
+      required: true,
+      default: ""
+    }
+  },
   components: {
     bNavbar,
     bNavbarNav,

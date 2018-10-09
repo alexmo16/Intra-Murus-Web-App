@@ -1,16 +1,37 @@
 <template>
   <div id="app">
-    <NavBar></NavBar>
+    <navbar :firstname="username"></navbar>
     <router-view/>
   </div>
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue";
+import navbar from "@/components/NavBar.vue";
+import axios from "axios";
+
 export default {
   name: "App",
+  data: function() {
+    return {
+      username: ""
+    };
+  },
   components: {
-    NavBar
+    navbar
+  },
+  beforeCreate() {
+    axios
+      .get("/bs/api/membres")
+      .then(response => {
+        if (response.data) {
+          // TODO: l'api doit changer pour retourner les informations du current user.
+          // alors il faudra utiliser une nouvelle route.
+          this.username = response.data[0].prenom;
+        }
+      })
+      .catch(error => {
+        Promise.reject(error);
+      });
   }
 };
 </script>

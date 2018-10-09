@@ -69,7 +69,8 @@ router.beforeEach((to, from, next) => {
 
 axios.interceptors.request.use(
   function(config) {
-    // Do something before request is sent
+    let jwt = vueCookie.get("jwt");
+    config.headers.jwt = jwt;
     return config;
   },
   function(error) {
@@ -86,7 +87,7 @@ axios.interceptors.response.use(
   },
   function(error) {
     if (error.response && error.response.status == 403) {
-      __redirectLogin("http%3a%2f%2flocalhost:8081%2f", function(){});
+      __redirectLogin("http%3a%2f%2flocalhost:8081%2f", function() {});
     }
     return Promise.reject(error);
   }
