@@ -2,6 +2,9 @@
 
 nom de domaine local "localhost:8081"
 
+extension pour simuler un proxy entre le webapp et l'api --> https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc
+aller dans les settings et changer le premier paramètre "ORIGIN" pour "http://localhost:8081".
+
 # webapp commands
 
 ## Project setup
