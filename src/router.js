@@ -59,7 +59,6 @@ let __redirectLogin = function(backurl, callback) {
 ** next: function must be called to resolve the hook, used for redirect/error/move on next
 */
 router.beforeEach((to, from, next) => {
-  console.log(vueCookies.keys());
   let isJwt = vueCookies.isKey("jwt");
   if (isJwt == null) {
     __redirectLogin("http%3a%2f%2flocalhost:8081%2f", next);
