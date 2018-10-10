@@ -15,7 +15,6 @@
           Intra-MurUS
         </b-navbar-brand>
       </b-navbar>
-    
 
     <!-- Right aligned nav items -->
     <b-collapse is-nav id="nav_collapse">
@@ -25,7 +24,7 @@
           <template slot="button-content">
             <em>{{ firstname }}</em>
           </template>
-          <b-dropdown-item to="/about">À propos</b-dropdown-item>
+          <b-dropdown-item to="/about" class="dropdownElement">À propos</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
@@ -45,6 +44,19 @@
     color: @text;
     min-height: 60px;
   }
+
+  .user {
+    .dropdownElement {
+      &:active {
+        background-color: @theme;
+      }
+
+      &.active, &.active:active {
+        background-color: @theme;
+      }
+    }
+  }
+ 
   
   /* Brand */
   .main {
