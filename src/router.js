@@ -6,7 +6,7 @@ import Error404 from "./views/Error404.vue";
 import Error500 from "./views/Error500.vue";
 
 import axios from "axios";
-import vueCookies from "vue-cookies";
+import utils from "./utils";
 
 Vue.use(VueRouter);
 
@@ -71,7 +71,7 @@ let __redirectLogin = function(backurl, next) {
 ** next: function must be called to resolve the hook, used for redirect/error/move on next
 */
 router.beforeEach((to, from, next) => {
-  let isJwt = vueCookies.isKey("jwt");
+  let isJwt = utils.verifyCookie("jwt");
   if (!isJwt && to.path != "/internal-error") {
     __redirectLogin("http%3a%2f%2flocalhost:8081%2f", next);
   } else {
@@ -81,10 +81,13 @@ router.beforeEach((to, from, next) => {
 
 axios.interceptors.request.use(
   function(config) {
-    let jwt = vueCookies.get("jwt");
-    if (jwt) {
-      config.headers.jwt = jwt;
+    if (config && utils.isApiCall(config.url)) {
+      let jwt = utils.getCookie("jwt");
+      if (jwt) {
+        config.headers.jwt = jwt;
+      }
     }
+
     return config;
   },
   function(error) {
@@ -100,10 +103,7 @@ axios.interceptors.response.use(
   },
   function(error) {
     if (error.response && error.response.status == 403) {
-      let keys = vueCookies.keys();
-      keys.forEach(key => {
-        vueCookies.remove(key);
-      });
+      utils.deleteAllCookies();
       __redirectLogin("http%3a%2f%2flocalhost:8081%2f", function() {});
     } else if (error.response && error.response.status == 500) {
       router.push("/internal-error");

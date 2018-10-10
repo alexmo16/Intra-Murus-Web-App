@@ -25,7 +25,7 @@
           <template slot="button-content">
             <em>{{ firstname }}</em>
           </template>
-          <b-dropdown-item to="/about">About</b-dropdown-item>
+          <b-dropdown-item to="/about">À propos</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-collapse>
