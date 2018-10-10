@@ -10,7 +10,7 @@
     <!-- Brand -->
     
       <b-navbar>
-        <b-navbar-brand class="brand" to="/">
+        <b-navbar-brand id="imurusBrand" to="/">
           <img src="../assets/centre_sportif_logo_brand.png" class="d-inline-block align-center" alt="BV">
           Intra-MurUS
         </b-navbar-brand>
@@ -42,14 +42,16 @@
   /* Main frame of the navigation bar */
   .main {
     background-color: @theme;
-    color: @text !important;
+    color: @text;
     min-height: 60px;
   }
   
   /* Brand */
-  .main .brand {
-    color: @text !important;
-    position: absolute;
+  .main {
+    #imurusBrand {
+      color: @text;
+      position: absolute;
+    }
   }
 
   /* User */
