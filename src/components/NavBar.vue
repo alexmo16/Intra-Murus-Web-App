@@ -32,11 +32,8 @@
   </b-navbar>
 </template>
 
-<style lang="less">
-  @theme      : #00a759;
-  @themDark   : #016735;
-  @text       : #ffffff;
-  @textHover  : #000000;
+<style lang="less"> 
+  @import (reference) "../GlobalStyles.less";
 
   /* Main frame of the navigation bar */
   .main {
