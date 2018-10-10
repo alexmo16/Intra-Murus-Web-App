@@ -1,27 +1,27 @@
 <!-- Navigation Bar Layout
   _____________________________________
-  | Brand                    Dropdown |
+  | Brand                       User  |
   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
   Brand : Contains the logo of the website and is linked to the home page.
-  Dropdown - About : Redirect to the about page.
+  User - About : Redirect to the about page.
 -->
 <template>
-  <b-navbar toggleable="md" type="dark" variant="info">
+  <b-navbar class="main" toggleable="md">
     <!-- Brand -->
-    <div>
-      <b-navbar variant="faded" type="light">
-        <b-navbar-brand to="/">
+    
+      <b-navbar>
+        <b-navbar-brand class="brand" to="/">
           <img src="../assets/centre_sportif_logo_brand.png" class="d-inline-block align-center" alt="BV">
           Intra-MurUS
         </b-navbar-brand>
       </b-navbar>
-    </div>
+    
 
     <!-- Right aligned nav items -->
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav class="ml-auto">
-        <!-- Drop down -->
-        <b-nav-item-dropdown right>
+        <!-- User -->
+        <b-nav-item-dropdown right class="user">
           <template slot="button-content">
             <em>{{ firstname }}</em>
           </template>
@@ -32,6 +32,35 @@
     
   </b-navbar>
 </template>
+
+<style lang="less">
+  @theme      : #00a759;
+  @themDark   : #016735;
+  @text       : #ffffff;
+  @textHover  : #000000;
+
+  /* Main frame of the navigation bar */
+  .main {
+    background-color: @theme;
+    color: @text !important;
+    min-height: 60px;
+  }
+  
+  /* Brand */
+  .main .brand {
+    color: @text !important;
+    position: absolute;
+  }
+
+  /* User */
+  .main .ml-auto .user .nav-link {
+    color: @text;
+    &:hover, &:focus {
+      color: @textHover;
+    }
+  }
+
+</style>
 
 <script>
 import bNavbar from "bootstrap-vue/es/components/navbar/navbar";
