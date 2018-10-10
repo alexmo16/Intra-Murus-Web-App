@@ -5,6 +5,18 @@
   </div>
 </template>
 
+<style lang="less">
+@import "./GlobalStyles.less";
+
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+</style>
+
 <script>
 import navbar from "@/components/NavBar.vue";
 import axios from "axios";
@@ -37,15 +49,3 @@ export default {
   }
 };
 </script>
-
-<style lang="less">
-  @import "./GlobalStyles.less";
-
-  #app {
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
-</style>

@@ -32,45 +32,45 @@
   </b-navbar>
 </template>
 
-<style lang="less"> 
-  @import (reference) "../GlobalStyles.less";
+<style lang="less">
+@import (reference) "../GlobalStyles.less";
 
-  /* Main frame of the navigation bar */
-  .main {
-    background-color: @theme;
+/* Main frame of the navigation bar */
+.main {
+  background-color: @theme;
+  color: @text;
+  min-height: 60px;
+}
+
+.user {
+  .dropdownElement {
+    &:active {
+      background-color: @theme;
+    }
+
+    &.active,
+    &.active:active {
+      background-color: @theme;
+    }
+  }
+}
+
+/* Brand */
+.main {
+  #imurusBrand {
     color: @text;
-    min-height: 60px;
+    position: absolute;
   }
+}
 
-  .user {
-    .dropdownElement {
-      &:active {
-        background-color: @theme;
-      }
-
-      &.active, &.active:active {
-        background-color: @theme;
-      }
-    }
+/* User */
+.main .ml-auto .user .nav-link {
+  color: @text;
+  &:hover,
+  &:focus {
+    color: @textHover;
   }
- 
-  
-  /* Brand */
-  .main {
-    #imurusBrand {
-      color: @text;
-      position: absolute;
-    }
-  }
-
-  /* User */
-  .main .ml-auto .user .nav-link {
-    color: @text;
-    &:hover, &:focus {
-      color: @textHover;
-    }
-  }
-
+}
 </style>
 
 <script>
