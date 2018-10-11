@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
-    <router-view/>
+    <toolbar></toolbar>
+    <div class="routerView">
+      <router-view/>  
+    </div>
   </div>
 </template>
 
@@ -13,12 +16,18 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+
+  div.routerView {
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+  }
 }
 </style>
 
 <script>
 import navbar from "@/components/NavBar.vue";
+import toolbar from "@/components/ToolBar.vue";
 import axios from "axios";
 
 export default {
@@ -29,7 +38,8 @@ export default {
     };
   },
   components: {
-    navbar
+    navbar,
+    toolbar
   },
   beforeCreate() {
     if (["500", "404"].indexOf(this.$route.name) == -1) {
