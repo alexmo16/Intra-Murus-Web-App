@@ -11,14 +11,26 @@
 <style scoped lang="less">
 @import (reference) "../GlobalStyles.less";
 
+.filterContainer {
+  display: inline;
+}
+
 .combobox {
-  max-width: 200px;
+  max-width: 180px;
   min-width: 100px;
   margin-right: 25px;
   &:focus {
     border-color: @themDark;
     box-shadow: 0 0 0.2rem @theme-box-shadow;
     -webkit-box-shadow: 0 0 0.2rem @theme-box-shadow;
+  }
+}
+
+@media screen and (max-width: 864px) {
+  .combobox {
+    max-width: 180px;
+    min-width: 100px;
+    margin-right: 8px;
   }
 }
 
