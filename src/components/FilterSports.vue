@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filterContainer">
     <b-form-select v-model="selectedYear" :options="years" id="year" class="mb-3 combobox"/>
     <b-form-select v-model="selectedSeason" :options="seasons" id="saison" class="mb-3 combobox"/>
     <b-form-select v-model="selectedSport" :options="sports" id="sport" class="mb-3 combobox"/>
@@ -21,16 +21,17 @@
     -webkit-box-shadow: 0 0 0.2rem @theme-box-shadow;
   }
 }
+
+.filterContainer * {
+  &:hover {
+    cursor: pointer;
+  }
+}
 </style>
 
 <script>
-import BFormSelect from "bootstrap-vue/es/components/form-select/form-select";
-
 export default {
   name: "FilterSports",
-  components: {
-    BFormSelect
-  },
   data: function() {
     return {
       selectedSport: "Soccer",
@@ -40,7 +41,7 @@ export default {
       sports: [
         { value: "Soccer", text: "Soccer" },
         { value: "Balle molle", text: "Balle molle" },
-        { value: "Hockey sur Gazon", text: "Hockey sur Gazon" }
+        { value: "Hockey sur Gazon", text: "Hockey sur gazon" }
       ],
       years: [
         { value: "2016", text: "2016" },
