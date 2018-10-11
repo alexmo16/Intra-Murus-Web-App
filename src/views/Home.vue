@@ -1,23 +1,23 @@
 <template>
   <div id="appHome">
-    <hello-world msg="Bonjour vous!"></hello-world>
+    <filter-sports></filter-sports>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import FilterSports from "@/components/FilterSports.vue";
 
 export default {
   name: "home",
   components: {
-    HelloWorld
+    FilterSports
   }
 };
 </script>
 
 <style lang="less">
 #appHome {
-  margin-top: 100px;
+  margin-top: 35px;
 }
 </style>
