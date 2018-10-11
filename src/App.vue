@@ -19,9 +19,13 @@
 
   div.routerView {
     margin-left: 200px;
-    padding: 1px 16px;
-    height: 1000px;
+    height: 100%;
   }
+
+  @media screen and (max-width: 700px) {
+    div.routerView {margin-left: 0;}
+  }
+
 }
 </style>
 

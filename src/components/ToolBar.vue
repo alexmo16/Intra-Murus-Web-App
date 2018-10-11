@@ -1,7 +1,8 @@
 <template>
+    
     <div class="sidebar">
-      <a href="/">Acceuil</a>
-      <a href="/about">À propos</a>
+      <toolbaritem name="Acceuil" route="/" class="item"></toolbaritem>
+      <toolbaritem name="À propos" route="/about" class="item" ></toolbaritem>
     </div>
 </template>
 
@@ -14,52 +15,23 @@
     padding: 0;
     width: 200px;
     background-color: @secondaryLight;
-    position: fixed;
+    position: absolute;
     height: 100%;
     overflow: auto;
   }
 
-  .sidebar a {
-    display: block;
-    color: black;
-    padding: 16px;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .sidebar a.active {
-    background-color: @secondaryDark;
-    color: @theme;
-  }
-
-  .sidebar a:hover:not(.active) {
-    background-color: @secondary;
-    color: @theme;
-  }
-
-    @media screen and (max-width: 700px) {
-    .sidebar {
-      width: 100%;
-      height: auto;
-      position: relative;
-    }
-    .sidebar a {float: left;}
-    // div.content {margin-left: 0;}
-  }
-
-  @media screen and (max-width: 400px) {
-    .sidebar a {
-      text-align: center;
-      float: none;
-    }
-  }
 </style>
 
 <script>
+import toolbaritem from "@/components/ToolBarItem.vue";
+
 export default {
   name: "HelloWorld",
   props: {
     msg: String
+  },
+  components: {
+    toolbaritem
   }
 };
 </script>
