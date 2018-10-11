@@ -23,9 +23,10 @@
   }
 
   @media screen and (max-width: 700px) {
-    div.routerView {margin-left: 0;}
+    div.routerView {
+      margin-left: 0px;
+    }
   }
-
 }
 </style>
 
