@@ -98,7 +98,6 @@ export default {
           teamName: "Scrumtus Soccer",
           teamMembers: [
             "Alexis Morel",
-            "Patrick Bealieu",
             "Walid Madaoui",
             "Yanik Gobeil",
             "Mathieu Favreau"
@@ -108,7 +107,10 @@ export default {
         {
           teamLength: 1,
           teamName: "Roy's team",
-          teamMembers: ["Félix Roy"],
+          teamMembers: [
+            "Félix Roy",
+            "Patrick Bealieu"
+          ],
           _showDetails: false
         }
       ]
