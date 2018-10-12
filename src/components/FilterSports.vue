@@ -25,12 +25,16 @@
     -webkit-box-shadow: 0 0 0.2rem @theme-box-shadow;
   }
 }
-
-@media screen and (max-width: 864px) {
+@media screen and (max-width: 1150px) {
   .combobox {
-    max-width: 180px;
-    min-width: 100px;
+    max-width: 100px;
     margin-right: 8px;
+  }
+}
+
+@media screen and (max-width: 1450px) {
+  .combobox {
+    max-width: 150px;
   }
 }
 
