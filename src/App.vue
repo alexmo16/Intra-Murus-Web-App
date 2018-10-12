@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
-    <toolbar></toolbar>
+    <toolbar v-if="['500', '404'].indexOf($route.name) == -1"></toolbar>
     <div class="routerView">
       <router-view/>  
     </div>

@@ -11,15 +11,14 @@
 @import (reference) "../GlobalStyles.less";
 
 .sidebar {
-    margin: 0;
-    padding: 0;
-    width: 200px;
-    background-color: @secondaryLight;
-    position: absolute;
-    height: 100%;
-    overflow: auto;
-  }
-
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: @secondaryLight;
+  position: absolute;
+  height: 100%;
+  overflow: auto;
+}
 </style>
 
 <script>
