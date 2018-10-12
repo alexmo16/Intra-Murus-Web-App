@@ -134,11 +134,9 @@ export default {
   },
   methods: {
     acceptApprobation: function(row) {
-      console.log("accepte la demande");
       this._removeRowFromTable(row.index);
     },
     refuseApprobation: function(row) {
-      console.log("refuse la demande");
       this._removeRowFromTable(row.index);
     },
     _removeRowFromTable: function(index) {
