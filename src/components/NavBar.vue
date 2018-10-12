@@ -39,7 +39,7 @@
 .main {
   background-color: @theme;
   color: @text;
-  min-height: 60px;
+  height: 100%;
 }
 
 .user {
