@@ -5,8 +5,12 @@
       <div class="labelContainer">
         <span>{{ row.item.teamName }}</span>
       </div>
+      <div class="approbationContainer">
+        <img :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="acceptApprobation(row)"/>
+        <img :class="{ hide: !row.detailsShowing }" src="../assets/red-cancel.svg" @click.stop="refuseApprobation(row)"/>
+      </div>
       <div class="expandContainer">
-        <img :class="{ open: row.detailsShowing }" src="../assets/down-arrow.svg" @click.stop="row.toggleDetails" class="buttonExpand"/>
+        <img :class="{ open: row.detailsShowing }" src="../assets/down-arrow.svg" class="buttonExpand"/>
       </div>
       </div>
     </template>
@@ -22,6 +26,10 @@
 
 <style scoped lang="less">
 @import (reference) "../GlobalStyles.less";
+
+.hide {
+  display: none;
+}
 
 .tableContainer {
   width: 60%;
@@ -53,6 +61,17 @@
       color: @textHover;
       font-weight: 500;
       font-size: 18px;
+    }
+  }
+
+  .approbationContainer {
+    display: table-cell;
+    width: 50%;
+    text-align: right;
+    padding-right: 20px;
+
+    img {
+      margin-right: 8px;
     }
   }
 
@@ -107,14 +126,24 @@ export default {
         {
           teamLength: 1,
           teamName: "Roy's team",
-          teamMembers: [
-            "Félix Roy",
-            "Patrick Bealieu"
-          ],
+          teamMembers: ["Félix Roy", "Patrick Bealieu"],
           _showDetails: false
         }
       ]
     };
+  },
+  methods: {
+    acceptApprobation: function(row) {
+      console.log("accepte la demande");
+      this._removeRowFromTable(row.index);
+    },
+    refuseApprobation: function(row) {
+      console.log("refuse la demande");
+      this._removeRowFromTable(row.index);
+    },
+    _removeRowFromTable: function(index) {
+      this.items.splice(index, 1);
+    }
   }
 };
 </script>
