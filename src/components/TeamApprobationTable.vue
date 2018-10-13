@@ -1,13 +1,14 @@
 <template>
-  <b-table :items="items" :fields="fields" class="tableContainer">
+  <div>
+    <b-table :items="items" :fields="fields" class="tableContainer" show-empty empty-text="Il n'y a pas de demandes pour l'instant">
     <template slot="approbations" slot-scope="row">
       <div class="rowContainer" @click.stop="row.toggleDetails">
       <div class="labelContainer">
         <span>{{ row.item.teamName }}</span>
       </div>
       <div class="approbationContainer">
-        <img :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="acceptApprobation(row)"/>
-        <img :class="{ hide: !row.detailsShowing }" src="../assets/red-cancel.svg" @click.stop="refuseApprobation(row)"/>
+        <img id="acceptButton" :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="showModal($event, row)"/>
+        <img id="refuseButton" :class="{ hide: !row.detailsShowing }" src="../assets/red-cancel.svg" @click.stop="showModal($event,  row)"/>
       </div>
       <div class="expandContainer">
         <img :class="{ open: row.detailsShowing }" src="../assets/down-arrow.svg" class="buttonExpand"/>
@@ -22,6 +23,11 @@
       </b-card>
     </template>
   </b-table>
+  <b-modal centered ref="confirmationModal" title="Confirmation" @ok="sendDecision" @cancel="sendDecision">
+    <span v-if="this.isAcceptClicked">Êtes-vous sûr de vouloir approuver cette équipe?</span>
+    <span v-if="this.isRefuseClicked">Êtes-vous sûr de vouloir refuser cette équipe?</span>
+  </b-modal>
+  </div>
 </template>
 
 <style scoped lang="less">
@@ -110,6 +116,10 @@ export default {
   name: "TeamApprobationTable",
   data: function() {
     return {
+      isRefuseClicked: false,
+      isAcceptClicked: false,
+      selectedRow: {},
+
       fields: ["approbations"],
       items: [
         {
@@ -133,14 +143,39 @@ export default {
     };
   },
   methods: {
-    acceptApprobation: function(row) {
-      this._removeRowFromTable(row.index);
+    resetAttributes: function() {
+      this.isAcceptClicked = false;
+      this.isRefuseClicked = false;
+      this.selectedRow = {};
     },
-    refuseApprobation: function(row) {
-      this._removeRowFromTable(row.index);
+    showModal: function(event, row) {
+      this.isRefuseClicked = event.currentTarget.id == "refuseButton";
+      this.isAcceptClicked = !this.isRefuseClicked;
+      this.selectedRow = row;
+      this.$refs.confirmationModal.show();
     },
-    _removeRowFromTable: function(index) {
-      this.items.splice(index, 1);
+    hideModal: function() {
+      this.resetAttributes();
+      this.$refs.confirmationModal.hide();
+    },
+    sendDecision: function(event) {
+      event.preventDefault();
+      if (this.isRefuseClicked) {
+        this.refuseApprobation();
+      } else {
+        this.acceptApprobation();
+      }
+      this.hideModal();
+      this._removeRowFromTable();
+    },
+    acceptApprobation: function() {
+      console.log("approuvé");
+    },
+    refuseApprobation: function() {
+      console.log("refusé");
+    },
+    _removeRowFromTable: function() {
+      this.items.splice(this.selectedRow.index, 1);
     }
   }
 };
