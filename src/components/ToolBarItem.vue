@@ -1,12 +1,11 @@
 <template>
   <span class="item">
     <router-link :to="route" class="text">
-        <em>{{ name }}</em>
+        {{ name }}
     </router-link>
   </span>
 </template>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import (reference) "../GlobalStyles.less";
 
@@ -15,7 +14,6 @@
   color: black;
   padding: 16px;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .item .text.active {

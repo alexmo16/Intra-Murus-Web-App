@@ -1,9 +1,11 @@
 <template>
   <div id="app">
-    <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
-    <toolbar v-if="['500', '404'].indexOf($route.name) == -1"></toolbar>
-    <div class="routerView">
-      <router-view/>  
+    <div class="header">
+      <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
+    </div>
+    <div class="body">
+      <div class="toolbar " v-if="['500', '404'].indexOf($route.name) == -1"><toolbar></toolbar></div>
+      <div class="routerview"><router-view/></div>
     </div>
   </div>
 </template>
@@ -16,15 +18,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
 
-  div.routerView {
-    margin-left: 200px;
-    height: 100%;
+  .header {
+    height: 60px;
   }
 
-  @media screen and (max-width: 700px) {
-    div.routerView {
-      margin-left: 0px;
+  .body {
+    height: 100%;
+    display: flex;
+
+    .toolbar {
+      width: 200px;
+    }
+
+    .routerview {
+      flex: 1;
     }
   }
 }
