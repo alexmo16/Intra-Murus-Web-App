@@ -23,7 +23,7 @@
       </b-card>
     </template>
   </b-table>
-  <b-modal centered ref="confirmationModal" title="Confirmation" @ok="sendDecision" @cancel="sendDecision">
+  <b-modal centered ref="confirmationModal" title="Confirmation" @ok="sendDecision" @cancel="resetAttributes">
     <span v-if="this.isAcceptClicked">Êtes-vous sûr de vouloir approuver cette équipe?</span>
     <span v-if="this.isRefuseClicked">Êtes-vous sûr de vouloir refuser cette équipe?</span>
   </b-modal>
