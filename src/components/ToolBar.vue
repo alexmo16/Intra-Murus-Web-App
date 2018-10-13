@@ -1,6 +1,7 @@
 <template>
   <div class="toolbar">
     <toolbaritem name="Acceuil" route="/" class="item"></toolbaritem>
+    <toolbaritem name="Équipes" route="/teams" class="item"></toolbaritem>
     <toolbaritem name="À propos" route="/about" class="item" ></toolbaritem>
   </div>
 </template>
