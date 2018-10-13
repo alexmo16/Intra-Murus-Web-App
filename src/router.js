@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
+import Teams from "./views/Teams.vue";
 import About from "./views/About.vue";
 import Error404 from "./views/Error404.vue";
 import Error500 from "./views/Error500.vue";
@@ -19,6 +20,11 @@ const router = new VueRouter({
       path: "/",
       name: "home",
       component: Home
+    },
+    {
+      path: "/teams",
+      name: "teams",
+      component: Teams
     },
     {
       path: "/about",

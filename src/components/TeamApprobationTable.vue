@@ -112,8 +112,6 @@
 
 
 <script>
-import axios from "axios";
-
 export default {
   name: "TeamApprobationTable",
   data: function() {
