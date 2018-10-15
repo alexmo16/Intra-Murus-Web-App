@@ -19,3 +19,5 @@ yarn-error.log*
 *.sln
 *.sw*
 ws.code-workspace
+.nyc_output/
+coverage/
