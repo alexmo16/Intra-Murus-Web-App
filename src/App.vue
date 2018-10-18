@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <div class="header">
+    <div class="navbarContainer">
       <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
     </div>
-    <div class="body">
-      <div class="toolbar " v-if="['500', '404'].indexOf($route.name) == -1"><toolbar></toolbar></div>
+    <div class="mainContainer">
+      <div class="toolbar" v-if="['500', '404'].indexOf($route.name) == -1"><toolbar></toolbar></div>
       <div class="routerview"><router-view/></div>
     </div>
   </div>
@@ -22,11 +22,11 @@
   display: flex;
   flex-flow: column;
 
-  .header {
+  .navbarContainer {
     height: 60px;
   }
 
-  .body {
+  .mainContainer {
     height: 100%;
     display: flex;
 
