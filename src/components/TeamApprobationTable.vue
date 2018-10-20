@@ -4,7 +4,7 @@
     <template slot="approbations" slot-scope="row">
       <div class="rowContainer" @click.stop="row.toggleDetails">
       <div class="labelContainer">
-        <span>{{ row.item.teamName }}</span>
+        <span>{{ row.item.teamTitle }}</span>
       </div>
       <div class="approbationContainer">
         <img id="acceptButton" :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="showModal($event, row)"/>
@@ -207,7 +207,14 @@ export default {
           }
 
           if (playerTeamIndex === -1) {
+            let teamTitle = player.nomEquipe;
+            if (this.$parent.$refs.filter.selectedSport === "") {
+              let sport = player.sport.replace(/_+/g, " ").toLowerCase();
+              teamTitle += ` (${sport})`;
+            }
+
             this.items.push({
+              teamTitle: teamTitle,
               teamName: player.nomEquipe,
               teamMembers: [teamMemberName],
               _showDetails: false
