@@ -12,7 +12,6 @@ describe("FilterSports.vue", function() {
       wrapper = shallowMount(FilterSports);
       component = wrapper.vm;
 
-      debugger;
       let expectFilters = ["years", "seasons", "leagues", "sports"];
       expect(component.filters).to.deep.equals(expectFilters);
     });
@@ -41,6 +40,31 @@ describe("FilterSports.vue", function() {
       expect(component.selectedYear).equals(new Date().getFullYear());
       expect(component.selectedLeague).equals("AA");
       expect(component.selectedSeason).equals("ETE");
+    });
+  });
+
+  describe("updated()", function() {
+    it("if all sports are selected it should do the same with leagues", function() {
+      window.localStorage.setItem("selectedSport", "SOCCER");
+      window.localStorage.setItem("selectedLeague", "AA");
+
+      wrapper = shallowMount(FilterSports);
+      component = wrapper.vm;
+
+      component.selectedSport = "";
+      component.$nextTick(() => {
+        expect(component.selectedLeague).to.be.empty;
+      });
+    });
+
+    it("should update localStorage on filter's value update.", function() {
+      component.selectedSeason = "ETE"
+
+      component.$nextTick(() => {
+        expect(component.selectedSeason).equals("ETE");
+        let selectedSeason = window.localStorage.getItem("selectedSeason");
+        expect(selectedSeason).equals("ETE");
+      });
     });
   });
 });
