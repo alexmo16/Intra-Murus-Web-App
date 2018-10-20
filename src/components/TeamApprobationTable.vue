@@ -112,10 +112,19 @@
 
 
 <script>
+import BModal from "bootstrap-vue/es/components/modal/modal";
+import BTable from "bootstrap-vue/es/components/table/table";
+import BCard from "bootstrap-vue/es/components/card/card";
+
 import axios from "axios";
 
 export default {
   name: "TeamApprobationTable",
+  components: {
+    BModal,
+    BTable,
+    BCard
+  },
   data: function() {
     return {
       isRefuseClicked: false,

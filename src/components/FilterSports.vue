@@ -46,8 +46,13 @@
 </style>
 
 <script>
+import BFormSelect from "bootstrap-vue/es/components/form-select/form-select";
+
 export default {
   name: "FilterSports",
+  components: {
+    BFormSelect
+  },
   props: {
     filters: {
       required: false,
