@@ -82,8 +82,27 @@ export default {
       ]
     };
   },
+  created: function() {
+    this.selectedSport = window.localStorage.getItem("selectedSport")
+      ? window.localStorage.getItem("selectedSport")
+      : this.selectedSport;
+    this.selectedLeague = window.localStorage.getItem("selectedLeague")
+      ? window.localStorage.getItem("selectedLeague")
+      : this.selectedLeague;
+    this.selectedSeason = window.localStorage.getItem("selectedSeason")
+      ? window.localStorage.getItem("selectedSeason")
+      : this.selectedSeason;
+    this.selectedYear = window.localStorage.getItem("selectedYear")
+      ? window.localStorage.getItem("selectedYear")
+      : this.selectedYear;
+  },
   updated: function() {
     this.$nextTick(function() {
+      window.localStorage.setItem("selectedSport", this.selectedSport);
+      window.localStorage.setItem("selectedLeague", this.selectedLeague);
+      window.localStorage.setItem("selectedSeason", this.selectedSeason);
+      window.localStorage.setItem("selectedYear", this.selectedYear);
+
       if (this.selectedSport === "") {
         this.selectedLeague = "";
       }
