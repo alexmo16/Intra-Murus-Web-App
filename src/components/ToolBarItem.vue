@@ -23,7 +23,7 @@
 
 .item .text:hover:not(.active) {
   background-color: @secondary;
-  color: @theme;
+  color: @text;
 }
 </style>
 
