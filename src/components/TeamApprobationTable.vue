@@ -127,7 +127,7 @@ export default {
     };
   },
   created: function() {
-    this._updateContent();
+    this._getFilteredApprobations();
   },
   methods: {
     resetAttributes: function() {
@@ -171,7 +171,7 @@ export default {
       this.items.splice(this.selectedRow.index, 1);
     },
 
-    _updateContent: function() {
+    _getFilteredApprobations: function() {
       let options = {
         params: {
           annee: this.$parent.$refs.filter.selectedYear,
@@ -185,42 +185,52 @@ export default {
       axios
         .get("/bs/api/views/membresEquipes", options)
         .then(response => {
-          if (response && response.data && response.data.length > 0) {
-            response.data.forEach(player => {
-              let playerTeamIndex = this.items.findIndex(
-                item => item.teamName === player.nomEquipe
-              );
-
-              if (playerTeamIndex === -1) {
-                this.items.push({
-                  teamName: player.nomEquipe,
-                  teamMembers: [`${player.prenom} ${player.nom}`],
-                  _showDetails: false
-                });
-              } else {
-                this.items[playerTeamIndex].teamMembers.push(
-                  `${player.prenom} ${player.nom}`
-                );
-              }
-            });
-          } else {
-            this.items = [];
+          if (response && response.data) {
+            this._updateContent(response.data);
           }
         })
         .catch(error => {
           Promise.reject(error);
         });
+    },
+
+    _updateContent: function(players) {
+      if (players && players.length > 0) {
+        players.forEach(player => {
+          let playerTeamIndex = this.items.findIndex(
+            item => item.teamName === player.nomEquipe
+          );
+
+          let teamMemberName = `${player.prenom} ${player.nom}`;
+          if (player.cip === player.cipCapitaine) {
+            teamMemberName += ` (Capitaine)`;
+          }
+
+          if (playerTeamIndex === -1) {
+            this.items.push({
+              teamName: player.nomEquipe,
+              teamMembers: [teamMemberName],
+              _showDetails: false
+            });
+          } else {
+            this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+          }
+        });
+      } else {
+        this.items = [];
+      }
     }
   },
+
   watch: {
     "$parent.$refs.filter.selectedSeason": function() {
-      this._updateContent();
+      this._getFilteredApprobations();
     },
     "$parent.$refs.filter.selectedSport": function() {
-      this._updateContent();
+      this._getFilteredApprobations();
     },
     "$parent.$refs.filter.selectedLeague": function() {
-      this._updateContent();
+      this._getFilteredApprobations();
     }
   }
 };
