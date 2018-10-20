@@ -1,9 +1,9 @@
 <template>
   <div class="filterContainer">
-    <b-form-select v-model="selectedYear" :options="years" id="year" v-if="filters.indexOf('years') != -1" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedSeason" :options="seasons" id="saison" v-if="filters.indexOf('seasons') != -1" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedSport" :options="sports" id="sport" v-if="filters.indexOf('sports') != -1" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" v-if="filters.indexOf('leagues') != -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedYear" :options="years" id="year" v-if="filters.indexOf('years') !== -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSeason" :options="seasons" id="saison" v-if="filters.indexOf('seasons') !== -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSport" :options="sports" id="sport" v-if="filters.indexOf('sports') !== -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" v-if="filters.indexOf('leagues') !== -1" :disabled="selectedSport === ''" class="mb-3 combobox"/>
   </div>
 </template>
 
@@ -56,13 +56,13 @@ export default {
   },
   data: function() {
     return {
-      selectedSport: "default",
-      selectedYear: "2018",
+      selectedSport: "",
+      selectedYear: new Date().getFullYear(),
       selectedSeason: "AUTOMNE",
-      selectedLeague: "default",
+      selectedLeague: "",
       sports: [
-        { value: "default", text: "Tous les sports" },
-        { value: "SOCCER", text: "Soccer" },
+        { value: "", text: "Tous les sports" },
+        { value: "SOCCER_INTERIEUR", text: "Soccer intérieur" },
         { value: "BASKETBALL", text: "Basketball" },
         { value: "HOCKEY", text: "Hockey" }
       ],
@@ -77,10 +77,17 @@ export default {
         { value: "ETE", text: "Été" }
       ],
       leagues: [
-        { value: "default", text: "Toutes les ligues" },
+        { value: "", text: "Toutes les ligues" },
         { value: "AA", text: "AA" }
       ]
     };
+  },
+  updated: function() {
+    this.$nextTick(function() {
+      if (this.selectedSport === "") {
+        this.selectedLeague = "";
+      }
+    });
   }
 };
 </script>

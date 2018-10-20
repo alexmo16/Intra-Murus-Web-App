@@ -112,6 +112,8 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
   name: "TeamApprobationTable",
   data: function() {
@@ -121,26 +123,11 @@ export default {
       selectedRow: {},
 
       fields: ["approbations"],
-      items: [
-        {
-          teamLength: 12,
-          teamName: "Scrumtus Soccer",
-          teamMembers: [
-            "Alexis Morel",
-            "Walid Madaoui",
-            "Yanik Gobeil",
-            "Mathieu Favreau"
-          ],
-          _showDetails: false
-        },
-        {
-          teamLength: 1,
-          teamName: "Roy's team",
-          teamMembers: ["Félix Roy", "Patrick Bealieu"],
-          _showDetails: false
-        }
-      ]
+      items: []
     };
+  },
+  created: function() {
+    this._updateContent();
   },
   methods: {
     resetAttributes: function() {
@@ -148,16 +135,19 @@ export default {
       this.isRefuseClicked = false;
       this.selectedRow = {};
     },
+
     showModal: function(event, row) {
-      this.isRefuseClicked = event.currentTarget.id == "refuseButton";
+      this.isRefuseClicked = event.currentTarget.id === "refuseButton";
       this.isAcceptClicked = !this.isRefuseClicked;
       this.selectedRow = row;
       this.$refs.confirmationModal.show();
     },
+
     hideModal: function() {
       this.resetAttributes();
       this.$refs.confirmationModal.hide();
     },
+
     sendDecision: function(event) {
       event.preventDefault();
       if (this.isRefuseClicked) {
@@ -168,14 +158,69 @@ export default {
       this.hideModal();
       this._removeRowFromTable();
     },
+
     acceptApprobation: function() {
       console.log("approuvé");
     },
+
     refuseApprobation: function() {
       console.log("refusé");
     },
+
     _removeRowFromTable: function() {
       this.items.splice(this.selectedRow.index, 1);
+    },
+
+    _updateContent: function() {
+      let options = {
+        params: {
+          annee: this.$parent.$refs.filter.selectedYear,
+          periode: this.$parent.$refs.filter.selectedSeason,
+          sport: this.$parent.$refs.filter.selectedSport,
+          nom_ligue: this.$parent.$refs.filter.selectedLeague,
+          statut_approbation: "EN_ATTENTE"
+        }
+      };
+
+      axios
+        .get("/bs/api/views/membresEquipes", options)
+        .then(response => {
+          if (response && response.data && response.data.length > 0) {
+            response.data.forEach(player => {
+              let playerTeamIndex = this.items.findIndex(
+                item => item.teamName === player.nomEquipe
+              );
+
+              if (playerTeamIndex === -1) {
+                this.items.push({
+                  teamName: player.nomEquipe,
+                  teamMembers: [`${player.prenom} ${player.nom}`],
+                  _showDetails: false
+                });
+              } else {
+                this.items[playerTeamIndex].teamMembers.push(
+                  `${player.prenom} ${player.nom}`
+                );
+              }
+            });
+          } else {
+            this.items = [];
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
+    }
+  },
+  watch: {
+    "$parent.$refs.filter.selectedSeason": function() {
+      this._updateContent();
+    },
+    "$parent.$refs.filter.selectedSport": function() {
+      this._updateContent();
+    },
+    "$parent.$refs.filter.selectedLeague": function() {
+      this._updateContent();
     }
   }
 };
