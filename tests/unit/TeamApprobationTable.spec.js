@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
 import sinon from "sinon";
 import TeamApprobationTable from "@/components/TeamApprobationTable.vue";
+import Teams from "@/views/Teams.vue";
 
 describe("TeamApprovationTable.vue", function() {
   let wrapper;
@@ -9,8 +10,9 @@ describe("TeamApprovationTable.vue", function() {
 
   before(function() {
     sinon.stub(TeamApprobationTable, "created").callsFake(function() {});
-
-    wrapper = shallowMount(TeamApprobationTable);
+    wrapper = shallowMount(TeamApprobationTable, {
+      parentComponent: Teams
+    });
     component = wrapper.vm;
   });
 
