@@ -1,9 +1,9 @@
 <template>
   <div class="filterContainer">
-    <b-form-select v-model="selectedYear" :options="years" id="year" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedSeason" :options="seasons" id="saison" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedSport" :options="sports" id="sport" class="mb-3 combobox"/>
-    <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedYear" :options="years" id="year" v-if="filters.indexOf('years') != -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSeason" :options="seasons" id="saison" v-if="filters.indexOf('seasons') != -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSport" :options="sports" id="sport" v-if="filters.indexOf('sports') != -1" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" v-if="filters.indexOf('leagues') != -1" class="mb-3 combobox"/>
   </div>
 </template>
 
@@ -48,16 +48,23 @@
 <script>
 export default {
   name: "FilterSports",
+  props: {
+    filters: {
+      required: false,
+      default: ["years", "seasons", "leagues", "sports"]
+    }
+  },
   data: function() {
     return {
-      selectedSport: "Soccer",
+      selectedSport: "default",
       selectedYear: "2018",
-      selectedSeason: "Automne",
-      selectedLeague: "AAA",
+      selectedSeason: "AUTOMNE",
+      selectedLeague: "default",
       sports: [
-        { value: "Soccer", text: "Soccer" },
-        { value: "Balle molle", text: "Balle molle" },
-        { value: "Hockey sur Gazon", text: "Hockey sur gazon" }
+        { value: "default", text: "Tous les sports" },
+        { value: "SOCCER", text: "Soccer" },
+        { value: "BASKETBALL", text: "Basketball" },
+        { value: "HOCKEY", text: "Hockey" }
       ],
       years: [
         { value: "2016", text: "2016" },
@@ -65,14 +72,13 @@ export default {
         { value: "2018", text: "2018" }
       ],
       seasons: [
-        { value: "Automne", text: "Automne" },
-        { value: "Hiver", text: "Hiver" },
-        { value: "Été", text: "Été" }
+        { value: "AUTOMNE", text: "Automne" },
+        { value: "HIVER", text: "Hiver" },
+        { value: "ETE", text: "Été" }
       ],
       leagues: [
-        { value: "AAA", text: "AAA" },
-        { value: "AA", text: "AA" },
-        { value: "A", text: "A" }
+        { value: "default", text: "Toutes les ligues" },
+        { value: "AA", text: "AA" }
       ]
     };
   }

@@ -1,6 +1,6 @@
 <template>
   <div id="appTeams">
-    <filter-sports></filter-sports>
+    <filter-sports :filters="['seasons', 'sports', 'leagues']" ref="filter"></filter-sports>
     <team-approbation-table></team-approbation-table>
   </div>
 </template>
@@ -12,6 +12,13 @@ import TeamApprobationTable from "@/components/TeamApprobationTable.vue";
 
 export default {
   name: "Teams",
+  data: function() {
+    return {
+      selectedLeague: "",
+      selectedSport: "",
+      selectedSeason: ""
+    };
+  },
   components: {
     FilterSports,
     TeamApprobationTable
