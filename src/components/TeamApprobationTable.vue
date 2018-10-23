@@ -169,11 +169,31 @@ export default {
     },
 
     acceptApprobation: function() {
-      console.log("approuvé");
+      let options = {
+        idEquipe: this.selectedRow.item.teamId,
+        statutApprobation: "CONFIRME"
+      };
+
+      axios
+        .put("/bs/api/equipes/updateStatutApprobation", options)
+        .then()
+        .catch(error => {
+          Promise.reject(error);
+        });
     },
 
     refuseApprobation: function() {
-      console.log("refusé");
+      let options = {
+        idEquipe: this.selectedRow.item.teamId,
+        statutApprobation: "REFUSE"
+      };
+
+      axios
+        .put("/bs/api/equipes/updateStatutApprobation", options)
+        .then()
+        .catch(error => {
+          Promise.reject(error);
+        });
     },
 
     _removeRowFromTable: function() {
@@ -186,13 +206,13 @@ export default {
           annee: this.$parent.$refs.filter.selectedYear,
           periode: this.$parent.$refs.filter.selectedSeason,
           sport: this.$parent.$refs.filter.selectedSport,
-          nom_ligue: this.$parent.$refs.filter.selectedLeague,
+          id_ligue: this.$parent.$refs.filter.selectedLeague,
           statut_approbation: "EN_ATTENTE"
         }
       };
 
       axios
-        .get("/bs/api/views/membresEquipes", options)
+        .get("/bs/api/equipes/getEquipeApprobationView", options)
         .then(response => {
           if (response && response.data) {
             this._updateContent(response.data);
@@ -223,6 +243,7 @@ export default {
             }
 
             this.items.push({
+              teamId: player.idEquipe,
               teamTitle: teamTitle,
               teamName: player.nomEquipe,
               teamMembers: [teamMemberName],

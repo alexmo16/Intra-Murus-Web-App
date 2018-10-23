@@ -83,7 +83,7 @@ export default {
       ],
       leagues: [
         { value: "", text: "Toutes les ligues" },
-        { value: "AA", text: "AA" }
+        { value: 1, text: "AA" }
       ]
     };
   },

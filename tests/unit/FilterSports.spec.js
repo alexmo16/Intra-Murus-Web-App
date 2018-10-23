@@ -58,7 +58,7 @@ describe("FilterSports.vue", function() {
     });
 
     it("should update localStorage on filter's value update.", function() {
-      component.selectedSeason = "ETE"
+      component.selectedSeason = "ETE";
 
       component.$nextTick(() => {
         expect(component.selectedSeason).equals("ETE");
