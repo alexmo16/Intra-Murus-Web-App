@@ -159,38 +159,32 @@ export default {
 
     sendDecision: function(event) {
       event.preventDefault();
-      if (this.isRefuseClicked) {
-        this.refuseApprobation();
-      } else {
-        this.acceptApprobation();
-      }
-      this.hideModal();
-      this._removeRowFromTable();
+      let statut = this.isRefuseClicked ? "REFUSE" : "CONFIRME";
+      let that = this;
+      this.updateStatutApprobation(statut, function(error) {
+        if (error) {
+          return error;
+        }
+        that.hideModal();
+        that._removeRowFromTable();
+      });
     },
 
-    acceptApprobation: function() {
+    updateStatutApprobation: function(statut, callback) {
       let options = {
         idEquipe: this.selectedRow.item.teamId,
-        statutApprobation: "CONFIRME"
+        statutApprobation: statut
       };
 
       axios
         .put("/bs/api/equipes/updateStatutApprobation", options)
-        .then()
-        .catch(error => {
-          Promise.reject(error);
-        });
-    },
-
-    refuseApprobation: function() {
-      let options = {
-        idEquipe: this.selectedRow.item.teamId,
-        statutApprobation: "REFUSE"
-      };
-
-      axios
-        .put("/bs/api/equipes/updateStatutApprobation", options)
-        .then()
+        .then(response => {
+          if (response && response.status == 200) {
+            callback();
+          } else {
+            return new Error();
+          }
+        })
         .catch(error => {
           Promise.reject(error);
         });
@@ -206,8 +200,8 @@ export default {
           annee: this.$parent.$refs.filter.selectedYear,
           periode: this.$parent.$refs.filter.selectedSeason,
           sport: this.$parent.$refs.filter.selectedSport,
-          id_ligue: this.$parent.$refs.filter.selectedLeague,
-          statut_approbation: "EN_ATTENTE"
+          idLigue: this.$parent.$refs.filter.selectedLeague,
+          statutApprobation: "EN_ATTENTE"
         }
       };
 
