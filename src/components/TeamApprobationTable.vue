@@ -4,7 +4,7 @@
     <template slot="approbations" slot-scope="row">
       <div class="rowContainer" @click.stop="row.toggleDetails">
       <div class="labelContainer">
-        <span>{{ row.item.teamName }}</span>
+        <span>{{ row.item.teamTitle }}</span>
       </div>
       <div class="approbationContainer">
         <img id="acceptButton" :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="showModal($event, row)"/>
@@ -112,8 +112,19 @@
 
 
 <script>
+import BModal from "bootstrap-vue/es/components/modal/modal";
+import BTable from "bootstrap-vue/es/components/table/table";
+import BCard from "bootstrap-vue/es/components/card/card";
+
+import axios from "axios";
+
 export default {
   name: "TeamApprobationTable",
+  components: {
+    BModal,
+    BTable,
+    BCard
+  },
   data: function() {
     return {
       isRefuseClicked: false,
@@ -121,26 +132,11 @@ export default {
       selectedRow: {},
 
       fields: ["approbations"],
-      items: [
-        {
-          teamLength: 12,
-          teamName: "Scrumtus Soccer",
-          teamMembers: [
-            "Alexis Morel",
-            "Walid Madaoui",
-            "Yanik Gobeil",
-            "Mathieu Favreau"
-          ],
-          _showDetails: false
-        },
-        {
-          teamLength: 1,
-          teamName: "Roy's team",
-          teamMembers: ["Félix Roy", "Patrick Bealieu"],
-          _showDetails: false
-        }
-      ]
+      items: []
     };
+  },
+  created: function() {
+    this._getFilteredApprobations();
   },
   methods: {
     resetAttributes: function() {
@@ -148,34 +144,124 @@ export default {
       this.isRefuseClicked = false;
       this.selectedRow = {};
     },
+
     showModal: function(event, row) {
-      this.isRefuseClicked = event.currentTarget.id == "refuseButton";
+      this.isRefuseClicked = event.currentTarget.id === "refuseButton";
       this.isAcceptClicked = !this.isRefuseClicked;
       this.selectedRow = row;
       this.$refs.confirmationModal.show();
     },
+
     hideModal: function() {
       this.resetAttributes();
       this.$refs.confirmationModal.hide();
     },
+
     sendDecision: function(event) {
       event.preventDefault();
-      if (this.isRefuseClicked) {
-        this.refuseApprobation();
-      } else {
-        this.acceptApprobation();
-      }
-      this.hideModal();
-      this._removeRowFromTable();
+      let statut = this.isRefuseClicked ? "REFUSE" : "CONFIRME";
+      let that = this;
+      this.updateStatutApprobation(statut, function(error) {
+        if (error) {
+          return error;
+        }
+        that.hideModal();
+        that._removeRowFromTable();
+      });
     },
-    acceptApprobation: function() {
-      console.log("approuvé");
+
+    updateStatutApprobation: function(statut, callback) {
+      let options = {
+        idEquipe: this.selectedRow.item.teamId,
+        statutApprobation: statut
+      };
+
+      axios
+        .put("/bs/api/equipes/updateStatutApprobation", options)
+        .then(response => {
+          if (response && response.status == 200) {
+            callback();
+          } else {
+            return new Error();
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
     },
-    refuseApprobation: function() {
-      console.log("refusé");
-    },
+
     _removeRowFromTable: function() {
       this.items.splice(this.selectedRow.index, 1);
+    },
+
+    _getFilteredApprobations: function() {
+      let options = {
+        params: {
+          annee: this.$parent.$refs.filter.selectedYear,
+          periode: this.$parent.$refs.filter.selectedSeason,
+          sport: this.$parent.$refs.filter.selectedSport,
+          idLigue: this.$parent.$refs.filter.selectedLeague,
+          statutApprobation: "EN_ATTENTE"
+        }
+      };
+
+      axios
+        .get("/bs/api/equipes/getEquipeApprobationView", options)
+        .then(response => {
+          if (response && response.data) {
+            this._updateContent(response.data);
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
+    },
+
+    _updateContent: function(players) {
+      if (players && players.length > 0) {
+        players.forEach(player => {
+          let playerTeamIndex = this.items.findIndex(
+            item => item.teamName === player.nomEquipe
+          );
+
+          let teamMemberName = `${player.prenom} ${player.nom}`;
+          if (player.cip === player.cipCapitaine) {
+            teamMemberName += ` (Capitaine)`;
+          }
+
+          if (playerTeamIndex === -1) {
+            let teamTitle = player.nomEquipe;
+            if (this.$parent.$refs.filter.selectedSport === "") {
+              let sport = player.sport.replace(/_+/g, " ").toLowerCase();
+              teamTitle += ` (${sport})`;
+            }
+
+            this.items.push({
+              teamId: player.idEquipe,
+              teamTitle: teamTitle,
+              teamName: player.nomEquipe,
+              teamMembers: [teamMemberName],
+              _showDetails: false
+            });
+          } else {
+            this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+          }
+        });
+      } else {
+        this.items = [];
+      }
+    }
+  },
+
+  watch: {
+    "$parent.$refs.filter.selectedSeason": function() {
+      this._getFilteredApprobations();
+    },
+    "$parent.$refs.filter.selectedSport": function() {
+      this._getFilteredApprobations();
+    },
+    "$parent.$refs.filter.selectedLeague": function() {
+      this._getFilteredApprobations();
     }
   }
 };
