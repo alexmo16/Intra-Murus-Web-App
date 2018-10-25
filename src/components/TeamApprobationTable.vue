@@ -200,7 +200,7 @@ export default {
           annee: this.$parent.$refs.filter.selectedYear,
           periode: this.$parent.$refs.filter.selectedSeason,
           sport: this.$parent.$refs.filter.selectedSport,
-          idLigue: this.$parent.$refs.filter.selectedLeague,
+          nomLigue: this.$parent.$refs.filter.selectedLeague,
           statutApprobation: "EN_ATTENTE"
         }
       };
