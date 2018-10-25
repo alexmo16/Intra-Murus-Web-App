@@ -48,70 +48,170 @@
 <script>
 import BFormSelect from "bootstrap-vue/es/components/form-select/form-select";
 
+import axios from "axios";
+
 export default {
   name: "FilterSports",
+
   components: {
     BFormSelect
   },
+
   props: {
     filters: {
       required: false,
-      default: ["years", "seasons", "leagues", "sports"]
+      default: function() {
+        return ["years", "seasons", "leagues", "sports"];
+      }
+    },
+    defaultSport: {
+      required: false,
+      default: function() {
+        return { value: "", text: "Tous les sports" };
+      }
+    },
+    defaultLeague: {
+      required: false,
+      default: function() {
+        return { value: "", text: "Toutes les ligues" };
+      }
     }
   },
+
   data: function() {
+    let that = this;
     return {
       selectedSport: "",
       selectedYear: new Date().getFullYear(),
       selectedSeason: "AUTOMNE",
       selectedLeague: "",
-      sports: [
-        { value: "", text: "Tous les sports" },
-        { value: "SOCCER_INTERIEUR", text: "Soccer intérieur" },
-        { value: "BASKETBALL", text: "Basketball" },
-        { value: "HOCKEY", text: "Hockey" }
-      ],
-      years: [
-        { value: "2016", text: "2016" },
-        { value: "2017", text: "2017" },
-        { value: "2018", text: "2018" }
-      ],
+      sports: [that.defaultSport],
+      leagues: [that.defaultLeague],
       seasons: [
         { value: "AUTOMNE", text: "Automne" },
         { value: "HIVER", text: "Hiver" },
         { value: "ETE", text: "Été" }
       ],
-      leagues: [
-        { value: "", text: "Toutes les ligues" },
-        { value: 1, text: "AA" }
+      years: [
+        { value: "2016", text: "2016" },
+        { value: "2017", text: "2017" },
+        { value: "2018", text: "2018" }
       ]
     };
   },
-  created: function() {
-    this.selectedSport = window.localStorage.getItem("selectedSport")
-      ? window.localStorage.getItem("selectedSport")
-      : this.selectedSport;
-    this.selectedLeague = window.localStorage.getItem("selectedLeague")
-      ? window.localStorage.getItem("selectedLeague")
-      : this.selectedLeague;
-    this.selectedSeason = window.localStorage.getItem("selectedSeason")
-      ? window.localStorage.getItem("selectedSeason")
-      : this.selectedSeason;
-    this.selectedYear = window.localStorage.getItem("selectedYear")
-      ? window.localStorage.getItem("selectedYear")
-      : this.selectedYear;
-  },
-  updated: function() {
-    this.$nextTick(function() {
-      window.localStorage.setItem("selectedSport", this.selectedSport);
-      window.localStorage.setItem("selectedLeague", this.selectedLeague);
-      window.localStorage.setItem("selectedSeason", this.selectedSeason);
-      window.localStorage.setItem("selectedYear", this.selectedYear);
 
-      if (this.selectedSport === "") {
-        this.selectedLeague = "";
+  created: function() {
+    let that = this;
+    this.getSportsValues(function(error) {
+      if (error) {
+        return error;
+      }
+
+      error = that.getLeaguesValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+
+      if (error) {
+        return error;
       }
     });
+  },
+
+  methods: {
+    getSportsValues: function(callback) {
+      let options = {
+        params: {
+          annee: this.selectedYear,
+          periode: this.selectedSeason
+        }
+      };
+
+      axios
+        .get("/bs/api/filtres/sports", options)
+        .then(response => {
+          let error;
+          if (response && response.data) {
+            this.updateSportsValues(response.data);
+          } else {
+            throw new Error("Unable to get sports values");
+          }
+
+          callback(error);
+        })
+        .catch(error => {
+          callback(error);
+          Promise.reject(error);
+        });
+    },
+
+    getLeaguesValues: function(callback) {
+      let options = {
+        params: {
+          annee: this.selectedYear,
+          periode: this.selectedSeason,
+          sport: this.selectedSport
+        }
+      };
+
+      axios
+        .get("/bs/api/filtres/ligues", options)
+        .then(response => {
+          let error;
+          if (response && response.data) {
+            this.updateLeaguesValues(response.data);
+          } else {
+            throw new Error("Unable to get leagues values");
+          }
+
+          callback(error);
+        })
+        .catch(error => {
+          callback(error);
+          Promise.reject(error);
+        });
+    },
+
+    updateSportsValues: function(sportsValues) {
+      let that = this;
+      this.sports = [this.defaultSport];
+      sportsValues.forEach(function(sportValue) {
+        let sportText = sportValue.replace(/_+/g, " ").toLowerCase();
+        sportText = sportText[0].toUpperCase() + sportText.slice(1);
+        that.sports.push({ value: sportValue, text: sportText });
+      });
+    },
+
+    updateLeaguesValues: function(leaguesValues) {
+      let that = this;
+      this.leagues = [this.defaultLeague];
+      leaguesValues.forEach(function(leagueValue) {
+        let leagueText = leagueValue.replace(/_+/g, " ");
+        leagueText = leagueText[0].toUpperCase() + leagueText.slice(1);
+        that.leagues.push({ value: leagueValue, text: leagueText });
+      });
+    }
+  },
+
+  watch: {
+    selectedSport: function() {
+      this.selectedLeague = "";
+      this.getLeaguesValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+    },
+
+    selectedSeason: function() {
+      this.selectedSport = "";
+      this.getSportsValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+    }
   }
 };
 </script>
