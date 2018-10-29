@@ -1,11 +1,12 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <p>Page à propos d'Intra-MurUS.</p>
   </div>
 </template>
 
 <style lang="less">
 .about {
   margin-top: 100px;
+  font-size: 20px;
 }
 </style>
