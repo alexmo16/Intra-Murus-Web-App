@@ -1,7 +1,8 @@
 <template>
-  <div class="toolbar" :class="{ hide: showToolbar }">
+  <div class="toolbar" :class="{ hide: !showToolbar }">
     <toolbaritem name="Acceuil" route="/" class="item"></toolbaritem>
     <toolbaritem name="Équipes" route="/teams" class="item"></toolbaritem>
+    <toolbaritem name="Horaires" route="/schedule" class="item"></toolbaritem>
     <toolbaritem name="À propos" route="/about" class="item" ></toolbaritem>
   </div>
 </template>
@@ -25,9 +26,11 @@ import toolbaritem from "@/components/ToolBarItem.vue";
 
 export default {
   name: "ToolBar",
+
   props: {
     msg: String
   },
+
   data: function() {
     return {
       showToolbar: {
@@ -36,8 +39,23 @@ export default {
       }
     };
   },
+
   components: {
     toolbaritem
+  },
+
+  created: function() {
+    this.showToolbar = window.localStorage.getItem("showToolbar")
+      ? window.localStorage.getItem("showToolbar") === "true"
+      : this.showToolbar;
+  },
+
+  watch: {
+    showToolbar: function() {
+      if (this.showToolbar !== null || this.showToolbar !== undefined) {
+        window.localStorage.setItem("showToolbar", this.showToolbar);
+      }
+    }
   }
 };
 </script>
