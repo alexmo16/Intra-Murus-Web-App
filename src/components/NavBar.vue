@@ -7,14 +7,17 @@
 -->
 <template>
   <b-navbar class="main" toggleable="md">
+    <div id="hambourgeois" v-on:click="toggleToolBar()">
+      ☰
+    </div>
+
     <!-- Brand -->
-    
-      <b-navbar>
-        <b-navbar-brand id="imurusBrand" to="/">
-          <img src="../assets/centre_sportif_logo_brand.png" class="d-inline-block align-center" alt="BV">
-          Intra-MurUS
-        </b-navbar-brand>
-      </b-navbar>
+    <b-navbar>
+      <b-navbar-brand id="imurusBrand" to="/">
+        <img src="../assets/centre_sportif_logo_brand.png" class="d-inline-block align-center" alt="BV">
+        Intra-MurUS
+      </b-navbar-brand>
+    </b-navbar>
 
     <!-- Right aligned nav items -->
     <b-collapse is-nav id="nav_collapse">
@@ -57,6 +60,17 @@
 
 /* Brand */
 .main {
+  #hambourgeois {
+    font-size: 25px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    &:hover {
+      cursor: pointer;
+    }
+  }
   #imurusBrand {
     color: @text;
     position: absolute;
@@ -82,17 +96,21 @@ import bNavbarToggle from "bootstrap-vue/es/components/navbar/navbar-toggle";
 export default {
   name: "navbar",
   props: {
-    firstname: {
-      type: String,
-      required: true,
-      default: ""
-    }
+    firstname: String
   },
   components: {
     bNavbar,
     bNavbarNav,
     bNavbarBrand,
     bNavbarToggle
+  },
+  methods: {
+    toggleToolBar: function() {
+      if (this.$parent && this.$parent.$refs.appToolbar) {
+        this.$parent.$refs.appToolbar.showToolbar = !this.$parent.$refs
+          .appToolbar.showToolbar;
+      }
+    }
   }
 };
 </script>

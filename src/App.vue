@@ -4,7 +4,7 @@
       <navbar :firstname="username" v-if="['500', '404'].indexOf($route.name) == -1"></navbar>
     </div>
     <div class="mainContainer">
-      <div class="toolbar" v-if="['500', '404'].indexOf($route.name) == -1"><toolbar></toolbar></div>
+      <toolbar class="toolbar" v-if="['500', '404'].indexOf($route.name) == -1" ref="appToolbar"></toolbar>
       <div class="routerview"><router-view/></div>
     </div>
   </div>

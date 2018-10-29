@@ -1,5 +1,5 @@
 <template>
-  <div class="toolbar">
+  <div class="toolbar" :class="{ hide: showToolbar }">
     <toolbaritem name="Acceuil" route="/" class="item"></toolbaritem>
     <toolbaritem name="Équipes" route="/teams" class="item"></toolbaritem>
     <toolbaritem name="À propos" route="/about" class="item" ></toolbaritem>
@@ -8,6 +8,10 @@
 
 <style scoped lang="less">
 @import (reference) "../GlobalStyles.less";
+
+.hide {
+  display: none;
+}
 
 .toolbar {
   background-color: @secondaryLight;
@@ -20,9 +24,17 @@
 import toolbaritem from "@/components/ToolBarItem.vue";
 
 export default {
-  name: "HelloWorld",
+  name: "ToolBar",
   props: {
     msg: String
+  },
+  data: function() {
+    return {
+      showToolbar: {
+        required: false,
+        default: true
+      }
+    };
   },
   components: {
     toolbaritem
