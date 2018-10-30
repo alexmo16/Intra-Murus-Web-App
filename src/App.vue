@@ -65,7 +65,7 @@ export default {
           if (response && response.data) {
             // TODO: l'api doit changer pour retourner les informations du current user.
             // alors il faudra utiliser une nouvelle route.
-            if (response.data.prenom) {
+            if (response.data.prenom && response.data.nom) {
               this.username = `${response.data.prenom} ${response.data.nom}`;
             }
           }
