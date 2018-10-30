@@ -2,8 +2,7 @@ module.exports = {
   devServer: {
     proxy: {
       "/bs": {
-        target: "http://localhost:8080/", //http://intramurus-api.us-east-1.elasticbeanstalk.com
-        //ws: true,
+        target: "http://zeus.gel.usherbrooke.ca:8080/intramurus-api/",
         changeOrigin: true,
         pathRewrite: {
           "^/bs": ""
