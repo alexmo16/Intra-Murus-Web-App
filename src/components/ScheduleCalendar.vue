@@ -56,6 +56,11 @@
         width: @buttonswidth;
         height: @buttonswidth;
         cursor: pointer;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
       #nextWeek {
         transform: rotate(-90deg);
@@ -68,7 +73,10 @@
   }
 
   #grid {
+    margin-top: 20px;
     width: 100%;
+    height: 400px;
+    border: 2px solid @secondaryLight;
   }
 }
 </style>
