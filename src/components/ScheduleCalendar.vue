@@ -27,9 +27,9 @@
   @buttonswidth: 25px;
 
   #calendarHeader {
-    width: 100%;
+    width: 300px;
     display: flex;
-
+    margin: 0 auto;
     * {
       margin: 0 auto;
     }
@@ -37,13 +37,6 @@
     #weekLabelContainer {
       vertical-align: middle;
       text-align: center;
-    }
-
-    .nextWeekContainer {
-      margin-left: -@buttonswidth - 15px;
-    }
-    .lastWeekContainer {
-      margin-right: -@buttonswidth - 15px;
     }
 
     .nextWeekContainer,
