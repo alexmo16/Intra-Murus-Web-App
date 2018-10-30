@@ -60,12 +60,14 @@ export default {
   beforeCreate() {
     if (["500", "404"].indexOf(this.$route.name) == -1) {
       axios
-        .get("/bs/api/membres")
+        .get("/bs/api/user")
         .then(response => {
-          if (response && response.data && response.data.length > 0) {
+          if (response && response.data) {
             // TODO: l'api doit changer pour retourner les informations du current user.
             // alors il faudra utiliser une nouvelle route.
-            this.username = response.data[0].prenom;
+            if (response.data.prenom) {
+              this.username = `${response.data.prenom} ${response.data.nom}`;
+            }
           }
         })
         .catch(error => {
