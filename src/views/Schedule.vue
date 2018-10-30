@@ -1,12 +1,12 @@
 <template>
   <div id="appSchedule">
-    <schedule-calender></schedule-calender>
+    <schedule-calendar></schedule-calendar>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import ScheduleCalender from "@/components/ScheduleCalender.vue";
+import ScheduleCalendar from "@/components/ScheduleCalendar.vue";
 
 export default {
   name: "Schedule",
@@ -14,7 +14,7 @@ export default {
     return {};
   },
   components: {
-    ScheduleCalender
+    ScheduleCalendar
   }
 };
 </script>
