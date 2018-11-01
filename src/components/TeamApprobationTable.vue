@@ -201,7 +201,7 @@ export default {
           periode: this.$parent.$refs.filter.selectedSeason,
           sport: this.$parent.$refs.filter.selectedSport,
           nomLigue: this.$parent.$refs.filter.selectedLeague,
-          statutApprobation: "EN_ATTENTE"
+          statutApprobation: "PRET_A_APPROUVER"
         }
       };
 

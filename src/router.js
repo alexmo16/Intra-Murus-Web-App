@@ -134,7 +134,7 @@ axios.interceptors.response.use(
       utils.deleteAllCookies();
       window.localStorage.removeItem("jwt");
       __redirectLogin("http%3a%2f%2flocalhost:8081%2f", function() {});
-    } else if (error.response && error.response.status == 500) {
+    } else if (error.response && error.response.status != 200) {
       router.push("/internal-error");
     } else {
       Promise.reject(error);
