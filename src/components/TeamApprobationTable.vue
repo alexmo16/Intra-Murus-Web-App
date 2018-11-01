@@ -233,7 +233,7 @@ export default {
             let teamTitle = player.nomEquipe;
             if (this.$parent.$refs.filter.selectedSport === "") {
               let sport = player.sport.replace(/_+/g, " ").toLowerCase();
-              teamTitle += ` (${sport})`;
+              teamTitle += ` (${sport} ${player.nomLigue})`;
             }
 
             this.items.push({
@@ -244,7 +244,12 @@ export default {
               _showDetails: false
             });
           } else {
-            this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+            let isPlayerPresent =
+              this.items[playerTeamIndex].teamMembers.indexOf(teamMemberName) !=
+              -1;
+            if (!isPlayerPresent) {
+              this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+            }
           }
         });
       } else {
