@@ -233,7 +233,7 @@ export default {
             let teamTitle = player.nomEquipe;
             if (this.$parent.$refs.filter.selectedSport === "") {
               let sport = player.sport.replace(/_+/g, " ").toLowerCase();
-              teamTitle += ` (${sport})`;
+              teamTitle += ` (${sport} ${player.nomLigue})`;
             }
 
             this.items.push({
