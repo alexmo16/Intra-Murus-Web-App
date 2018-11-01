@@ -244,7 +244,12 @@ export default {
               _showDetails: false
             });
           } else {
-            this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+            let isPlayerPresent =
+              this.items[playerTeamIndex].teamMembers.indexOf(teamMemberName) !=
+              -1;
+            if (!isPlayerPresent) {
+              this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+            }
           }
         });
       } else {
