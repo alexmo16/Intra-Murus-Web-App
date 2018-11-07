@@ -5,7 +5,7 @@
     </div>
     <div class="mainContainer">
       <toolbar class="toolbar" v-if="['500', '404'].indexOf($route.name) == -1" ref="appToolbar"></toolbar>
-      <div class="routerview"><router-view/></div>
+      <div class="routerview" ref="routerview"><router-view/></div>
     </div>
   </div>
 </template>
@@ -24,6 +24,9 @@
 
   .navbarContainer {
     height: 60px;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
   }
 
   .mainContainer {
@@ -32,10 +35,14 @@
 
     .toolbar {
       width: 200px;
+      margin-top: 60px;
+      position: fixed;
     }
 
     .routerview {
       flex: 1;
+      margin-top: 60px;
+      margin-left: 200px;
     }
   }
 }

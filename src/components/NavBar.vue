@@ -70,6 +70,17 @@ export default {
       if (this.$parent && this.$parent.$refs.appToolbar) {
         this.$parent.$refs.appToolbar.showToolbar = !this.$parent.$refs
           .appToolbar.showToolbar;
+        if (this.$parent.$refs.appToolbar.showToolbar) {
+          this.$parent.$refs.routerview.setAttribute(
+            "style",
+            "margin-left: 200px;"
+          );
+        } else {
+          this.$parent.$refs.routerview.setAttribute(
+            "style",
+            "margin-left: 0px;"
+          );
+        }
       }
     }
   }
