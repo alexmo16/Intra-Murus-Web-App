@@ -1,9 +1,9 @@
 <template>
-  <th class="container">
-    <span class="day">{{day}}</span>
-    <span class="long">{{long}}</span>
-    <span class="short">{{short}}</span>
-  </th>
+    <th class="container">
+      <span class="day">{{day}}</span>
+      <span class="long">{{long}}</span>
+      <span class="short">{{short}}</span>
+    </th>
 </template>
 
 <style scoped lang="less">
@@ -12,8 +12,16 @@
 .container {
   padding: 10px;
   border: 2px solid @secondaryLight;
-  min-height: 50px;
-  min-width: 100px;
+  height: 50px;
+  width: 100px;
+  align-content: center;
+}
+
+.timeblock {
+  display: table-cell;
+  border: 2px solid @secondaryLight;
+  display: block;
+  min-height: 20px;
 }
 
 .day {
@@ -46,7 +54,7 @@
 
 <script>
 export default {
-  name: "schedulegridheader",
+  name: "schedulegridcolumn",
 
   props: {
     day: {

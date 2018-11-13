@@ -25,7 +25,7 @@
   .navbarContainer {
     height: 60px;
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     width: 100%;
   }
 
@@ -37,6 +37,7 @@
       width: 200px;
       margin-top: 60px;
       position: fixed;
+      z-index: 1;
     }
 
     .routerview {

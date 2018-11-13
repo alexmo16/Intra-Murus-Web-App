@@ -12,35 +12,25 @@
         <img id="nextWeek" src="../assets/down-arrow.svg" @click.stop="changeWeek($event)"/>
       </div>
     </div>
-    <div id="grid">
+    <div id="gridContainer">
       <table>
-        <thead>
-          <schedulegridheader></schedulegridheader>
-          <schedulegridheader :day="sunday" long="Dimanche" short="Dim"></schedulegridheader>
-          <schedulegridheader :day="monday" long="Lundi" short="Lun"></schedulegridheader>
-          <schedulegridheader :day="tuesday" long="Mardi" short="Mar"></schedulegridheader>
-          <schedulegridheader :day="wednesday" long="Mercredi" short="Mer"></schedulegridheader>
-          <schedulegridheader :day="thursday " long="Jeudi" short="Jeu"></schedulegridheader>
-          <schedulegridheader :day="friday" long="Vendredi" short="Ven"></schedulegridheader>
-          <schedulegridheader :day="saturday" long="Samedi" short="Sam"></schedulegridheader>
-        </thead>
-        <schedulegridrow hour="8:00"></schedulegridrow>
-        <schedulegridrow hour="9:00"></schedulegridrow>
-        <schedulegridrow hour="10:00"></schedulegridrow>
-        <schedulegridrow hour="11:00"></schedulegridrow>
-        <schedulegridrow hour="12:00"></schedulegridrow>
-        <schedulegridrow hour="13:00"></schedulegridrow>
-        <schedulegridrow hour="14:00"></schedulegridrow>
-        <schedulegridrow hour="15:00"></schedulegridrow>
-        <schedulegridrow hour="16:00"></schedulegridrow>
-        <schedulegridrow hour="17:00"></schedulegridrow>
-        <schedulegridrow hour="18:00"></schedulegridrow>
-        <schedulegridrow hour="19:00"></schedulegridrow>
-        <schedulegridrow hour="20:00"></schedulegridrow>
-        <schedulegridrow hour="21:00"></schedulegridrow>
-        <schedulegridrow hour="22:00"></schedulegridrow>
-        <schedulegridrow hour="23:00"></schedulegridrow>
+        <schedulegridcolumn :day="sunday" long="Dimanche" short="Dim"></schedulegridcolumn>
+        <schedulegridcolumn :day="monday" long="Lundi" short="Lun"></schedulegridcolumn>
+        <schedulegridcolumn :day="tuesday" long="Mardi" short="Mar"></schedulegridcolumn>
+        <schedulegridcolumn :day="wednesday" long="Mercredi" short="Mer"></schedulegridcolumn>
+        <schedulegridcolumn :day="thursday " long="Jeudi" short="Jeu"></schedulegridcolumn>
+        <schedulegridcolumn :day="friday" long="Vendredi" short="Ven"></schedulegridcolumn>
+        <schedulegridcolumn :day="saturday" long="Samedi" short="Sam"></schedulegridcolumn>
       </table>
+      <div id="test">
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+        <schedulegridtimeblock></schedulegridtimeblock>
+      </div>
     </div>
   </div>
 </template>
@@ -93,22 +83,28 @@
     }
   }
 
-  #grid {
+  #gridContainer {
     margin-top: 20px;
+    display: grid;
+
+    #test {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto auto auto;
+    }
   }
 }
 </style>
 
 <script>
-import schedulegridheader from "@/components/ScheduleGridHeader.vue";
-import schedulegridrow from "@/components/ScheduleGridRow.vue";
+import schedulegridcolumn from "@/components/ScheduleGridColumn.vue";
+import schedulegridtimeblock from "@/components/ScheduleGridTimeBlock.vue";
 
 export default {
   name: "ScheduleCalendar",
 
   components: {
-    schedulegridheader,
-    schedulegridrow
+    schedulegridcolumn,
+    schedulegridtimeblock
   },
 
   props: {
