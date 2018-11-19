@@ -42,20 +42,6 @@ export default {
 
   components: {
     toolbaritem
-  },
-
-  created: function() {
-    this.showToolbar = window.localStorage.getItem("showToolbar")
-      ? window.localStorage.getItem("showToolbar") === "true"
-      : this.showToolbar;
-  },
-
-  watch: {
-    showToolbar: function() {
-      if (this.showToolbar !== null || this.showToolbar !== undefined) {
-        window.localStorage.setItem("showToolbar", this.showToolbar);
-      }
-    }
   }
 };
 </script>
