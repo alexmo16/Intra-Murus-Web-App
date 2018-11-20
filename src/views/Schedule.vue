@@ -129,11 +129,17 @@ export default {
     let that = this;
     // defined callback when a schedule is delete.
     this.$refs.calendar.registerEvent("beforeDeleteSchedule", function(event) {
-      that.$refs.calendar.fireMethod(
-        "deleteSchedule",
-        event.schedule.id,
-        event.schedule.calendarId
+      let scheduleIndex = that.schedules.findIndex(
+        schedule => schedule.id === event.schedule.id
       );
+      if (scheduleIndex != -1) {
+        that.schedules.splice(scheduleIndex, 1);
+        that.$refs.calendar.fireMethod(
+          "deleteSchedule",
+          event.schedule.id,
+          event.schedule.calendarId
+        );
+      }
     });
     // defined callback when a schedule is update.
     this.$refs.calendar.registerEvent("beforeUpdateSchedule", function(event) {
@@ -153,7 +159,7 @@ export default {
           ? that.schedules[that.schedules.length - 1].id
           : -1;
       that.schedules.push({
-        id: lastScheduleId + 1,
+        id: (parseInt(lastScheduleId) + 1).toString(),
         calendarId: "1",
         title: event.title,
         location: event.raw.location,
