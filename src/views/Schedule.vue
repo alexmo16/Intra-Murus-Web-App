@@ -18,15 +18,16 @@
 </template>
 
 <script>
-// @ is an alias to /src\
 import { VueTuicalendar } from "@lkmadushan/vue-tuicalendar";
 import "tui-calendar/dist/tui-calendar.min.css";
+import BPopover from "bootstrap-vue/es/components/popover/popover";
 
 export default {
   name: "Schedule",
 
   components: {
-    VueTuicalendar
+    VueTuicalendar,
+    BPopover
   },
 
   props: {
@@ -84,20 +85,22 @@ export default {
         {
           id: "1",
           calendarId: "1",
-          title: "Bleu vs Rouge",
+          title: "VolleyBall",
           location: "Centre sportif",
-          attendees: ["roy", "favreau"],
+          attendees: ["Bleu", "Rouge"],
           category: "time",
           dueDateClass: "",
           start: "2018-11-19T17:30:00",
-          end: "2018-11-19T19:30:00",
-          isReadOnly: true
+          end: "2018-11-19T19:30:00"
         }
       ],
 
       options: {
+        calendarId: "1",
         defaultView: "week",
         taskView: false,
+        useCreationPopup: true,
+        useDetailPopup: true,
         scheduleView: ["time"],
         week: {
           daynames: [
@@ -123,9 +126,43 @@ export default {
   },
 
   mounted: function() {
+    let that = this;
+    // defined callback when a schedule is delete.
     this.$refs.calendar.registerEvent("beforeDeleteSchedule", function(event) {
-      // do stuff here
-      console.log(event);
+      that.$refs.calendar.fireMethod(
+        "deleteSchedule",
+        event.schedule.id,
+        event.schedule.calendarId
+      );
+    });
+    // defined callback when a schedule is update.
+    this.$refs.calendar.registerEvent("beforeUpdateSchedule", function(event) {
+      event.schedule.start = event.start;
+      event.schedule.end = event.end;
+      that.$refs.calendar.fireMethod(
+        "updateSchedule",
+        event.schedule.id,
+        "1",
+        event.schedule
+      );
+    });
+    // defined callback when a schedule is create.
+    this.$refs.calendar.registerEvent("beforeCreateSchedule", function(event) {
+      let lastScheduleId =
+        that.schedules.length != []
+          ? that.schedules[that.schedules.length - 1].id
+          : -1;
+      that.schedules.push({
+        id: lastScheduleId + 1,
+        calendarId: "1",
+        title: event.title,
+        location: event.raw.location,
+        category: "time",
+        dueDateClass: "",
+        start: event.start,
+        end: event.end
+      });
+      1;
     });
   },
 
