@@ -1,7 +1,7 @@
 <template>
   <div id="appSchedule">
     <div id="calendarHeader">
-      <filter-fields class="filter"></filter-fields>
+      <filter-fields class="filter" ref="filter"></filter-fields>
       <div class="lastWeekContainer">
         <img id="lastWeek" src="../assets/down-arrow.svg" @click.stop="changeWeek($event)"/>
       </div>
@@ -74,6 +74,7 @@ import { VueTuicalendar } from "@lkmadushan/vue-tuicalendar";
 import "tui-calendar/dist/tui-calendar.min.css";
 import BModal from "bootstrap-vue/es/components/modal/modal";
 import InputGroup from "bootstrap-vue/es/components/input-group/input-group";
+import axios from "axios";
 
 import FilterFields from "@/components/FilterFields";
 
@@ -113,6 +114,10 @@ export default {
     return {
       weekLabel: "",
       currentDate: new Date(),
+      sundayDate: null,
+      startWeekEpoch: 0,
+      stopWeekEpoch: 0,
+
       textColor: "#ffffff",
       backgroundColor: "#00a759",
       dragBackgroundColor: "#016735",
@@ -126,8 +131,8 @@ export default {
           stopEpoch: 0
         }
       },
-
       schedules: [],
+      selectedField: null,
 
       options: {
         calendarId: "1",
@@ -191,29 +196,31 @@ export default {
     });
     // defined callback when a schedule is create.
     this.$refs.calendar.registerEvent("beforeCreateSchedule", function(event) {
-      let lastScheduleId =
-        that.schedules.length != []
-          ? that.schedules[that.schedules.length - 1].id
-          : -1;
-      that.selectedSchedule = {
-        id: (parseInt(lastScheduleId) + 1).toString(),
-        calendarId: "1",
-        title: "",
-        location: "",
-        category: "time",
-        dueDateClass: "",
-        start: event.start,
-        end: event.end,
-        color: that.textColor,
-        bgColor: that.backgroundColor,
-        dragBgColor: that.dragBackgroundColor,
-        raw: {
-          home: "",
-          away: "",
-          league: ""
-        }
-      };
-      that.$refs.createMatchModal.show();
+      if (that.$refs.filter && that.$refs.filter.selectedField != null) {
+        let lastScheduleId =
+          that.schedules.length != []
+            ? that.schedules[that.schedules.length - 1].id
+            : -1;
+        that.selectedSchedule = {
+          id: (parseInt(lastScheduleId) + 1).toString(),
+          calendarId: "1",
+          title: "",
+          location: that.$refs.filter.selectedField,
+          category: "time",
+          dueDateClass: "",
+          start: event.start,
+          end: event.end,
+          color: that.textColor,
+          bgColor: that.backgroundColor,
+          dragBgColor: that.dragBackgroundColor,
+          raw: {
+            home: "",
+            away: "",
+            league: ""
+          }
+        };
+        that.$refs.createMatchModal.show();
+      }
     });
 
     this.$refs.calendar.registerEvent("clickSchedule", function(event) {
@@ -233,6 +240,8 @@ export default {
 
     changeWeekLabel: function() {
       let sunday = this.getSunday(this.currentDate);
+      this.sundayDate = sunday;
+      this.sundayDate.setHours(0, 0, 0);
       this.weekLabel = `${sunday.getDate()} ${
         this.months[sunday.getMonth()]
       } ${this.currentDate.getFullYear()}`;
@@ -243,10 +252,19 @@ export default {
       this.currentDate.setDate(this.currentDate.getDate() + incrementer);
       this.changeWeekLabel();
 
+      this.startWeekEpoch = Math.ceil(this.sundayDate.getTime() / 1000);
+      let tempDate = this.sundayDate;
+      this.stopWeekEpoch =
+        new Date(tempDate.setDate(tempDate.getDate() + 7)).getTime() / 1000;
+      this.stopWeekEpoch = Math.ceil(this.stopWeekEpoch);
+
       if (incrementer > 0) {
         this.$refs.calendar.fireMethod("next");
       } else {
         this.$refs.calendar.fireMethod("prev");
+      }
+      if (this.selectedField != null) {
+        this.getSchedules(function() {});
       }
     },
 
@@ -282,6 +300,41 @@ export default {
         );
       }
       this.$refs.updateMatchModal.hide();
+    },
+
+    getSchedules: function(callback) {
+      let options = {
+        params: {
+          terrain: this.$refs.filter.selectedField,
+          startDate: this.startWeekEpoch,
+          endDate: this.stopWeekEpoch
+        }
+      };
+
+      axios
+        .get("/bs/api/matchs/getMatchsByTerrain", options)
+        .then(response => {
+          let error;
+          if (response && response.data) {
+            console.log(response.data);
+          } else {
+            throw new Error("Unable to get matchs");
+          }
+
+          callback(error);
+        })
+        .catch(error => {
+          callback(error);
+          Promise.reject(error);
+        });
+    }
+  },
+
+  watch: {
+    selectedField: function() {
+      if (this.selectedField != null) {
+        this.getSchedules(function() {});
+      }
     }
   }
 };

@@ -87,6 +87,12 @@ export default {
         that.fields.push({ value: fieldValue, text: fieldText });
       });
     }
+  },
+
+  watch: {
+    selectedField: function() {
+      this.$parent.selectedField = this.selectedField;
+    }
   }
 };
 </script>
