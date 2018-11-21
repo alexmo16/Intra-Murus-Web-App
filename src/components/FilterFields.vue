@@ -52,25 +52,22 @@ export default {
     };
   },
 
-  created: function() {},
+  created: function() {
+    this.getFieldsValues(function() {});
+  },
 
   methods: {
-    getSportsValues: function(callback) {
-      let options = {
-        params: {
-          annee: this.selectedYear,
-          periode: this.selectedSeason
-        }
-      };
+    getFieldsValues: function(callback) {
+      let options = {};
 
       axios
-        .get("/bs/api/filtres/sports", options)
+        .get("/bs/api/terrains/getAllTerrains", options)
         .then(response => {
           let error;
           if (response && response.data) {
-            this.updateSportsValues(response.data);
+            this.updateFieldsValues(response.data);
           } else {
-            throw new Error("Unable to get sports values");
+            throw new Error("Unable to get fields values");
           }
 
           callback(error);
@@ -81,13 +78,13 @@ export default {
         });
     },
 
-    updateSportsValues: function(sportsValues) {
+    updateFieldsValues: function(fieldsValues) {
       let that = this;
-      this.sports = [this.defaultSport];
-      sportsValues.forEach(function(sportValue) {
-        let sportText = sportValue.replace(/_+/g, " ").toLowerCase();
-        sportText = sportText[0].toUpperCase() + sportText.slice(1);
-        that.sports.push({ value: sportValue, text: sportText });
+      this.fields = [];
+      fieldsValues.forEach(function(fieldValue) {
+        let fieldText = fieldValue.replace(/_+/g, " ").toLowerCase();
+        fieldText = fieldText[0].toUpperCase() + fieldText.slice(1);
+        that.fields.push({ value: fieldValue, text: fieldText });
       });
     }
   }

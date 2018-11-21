@@ -178,6 +178,10 @@ export default {
     this.$refs.calendar.registerEvent("beforeUpdateSchedule", function(event) {
       event.schedule.start = event.start;
       event.schedule.end = event.end;
+      let index = that.schedules.findIndex(
+        schedule => schedule.id === event.schedule.id
+      );
+      that.schedules[index] = event.schedule;
       that.$refs.calendar.fireMethod(
         "updateSchedule",
         event.schedule.id,
@@ -294,7 +298,6 @@ export default {
 
   .filter {
     margin-top: -7px;
-    z-index: 2000;
     padding-right: 20px;
   }
 
