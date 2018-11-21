@@ -127,6 +127,7 @@ export default {
           home: "",
           away: "",
           league: "",
+          idMatch: 0,
           startEpoch: 0,
           stopEpoch: 0
         }
@@ -242,11 +243,11 @@ export default {
       let sunday = this.getSunday(this.currentDate);
       this.sundayDate = sunday;
       this.sundayDate.setHours(0, 0, 0);
-      this.startWeekEpoch = Math.ceil(this.sundayDate.getTime() / 1000);
+      this.startWeekEpoch = Math.floor(this.sundayDate.getTime() / 1000);
       let tempDate = new Date(this.sundayDate);
       this.stopWeekEpoch =
         new Date(tempDate.setDate(tempDate.getDate() + 7)).getTime() / 1000;
-      this.stopWeekEpoch = Math.ceil(this.stopWeekEpoch);
+      this.stopWeekEpoch = Math.floor(this.stopWeekEpoch);
 
       this.weekLabel = `${sunday.getDate()} ${
         this.months[sunday.getMonth()]
@@ -316,7 +317,62 @@ export default {
         .then(response => {
           let error;
           if (response && response.data) {
-            console.log(response.data);
+            let teams = response.data;
+            let that = this;
+            teams.forEach(function(team) {
+              let nomEquipe =
+                team.nomEquipe.charAt(0).toUpperCase() +
+                team.nomEquipe.substr(1).toLowerCase();
+
+              if (
+                that.schedules.findIndex(
+                  schedule => schedule.raw.idMatch === team.idMatch
+                ) === -1
+              ) {
+                let lastScheduleId =
+                  that.schedules.length != []
+                    ? that.schedules[that.schedules.length - 1].id
+                    : -1;
+
+                let startDate = new Date();
+                startDate.setTime(team.dateDebut);
+                let stopDate = new Date();
+                stopDate.setTime(team.dateFin);
+
+                let newSchedule = {
+                  id: (parseInt(lastScheduleId) + 1).toString(),
+                  calendarId: "1",
+                  title: team.sport.replace(/_+/g, " ").toLowerCase(),
+                  location: that.$refs.filter.selectedField,
+                  category: "time",
+                  dueDateClass: "",
+                  start: startDate,
+                  end: stopDate,
+                  color: that.textColor,
+                  bgColor: that.backgroundColor,
+                  dragBgColor: that.dragBackgroundColor,
+                  raw: {
+                    home: team.cote === "HOME" ? nomEquipe : "",
+                    away: team.cote === "AWAY" ? nomEquipe : "",
+                    league: team.nomLigue,
+                    idMatch: team.idMatch,
+                    startEpoch: team.dateDebut,
+                    stopEpoch: team.dateFin
+                  }
+                };
+
+                that.schedules.push(newSchedule);
+              } else {
+                let scheduleIndex = that.schedules.findIndex(
+                  schedule => schedule.raw.idMatch === team.idMatch
+                );
+                if (team.cote === "HOME") {
+                  that.schedules[scheduleIndex].raw.home = nomEquipe;
+                } else {
+                  that.schedules[scheduleIndex].raw.away = nomEquipe;
+                }
+              }
+            });
           } else {
             throw new Error("Unable to get matchs");
           }
@@ -333,6 +389,7 @@ export default {
   watch: {
     selectedField: function() {
       if (this.selectedField != null) {
+        this.schedules = [];
         this.getSchedules(function() {});
       }
     }
