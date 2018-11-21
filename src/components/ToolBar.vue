@@ -1,9 +1,30 @@
 <template>
   <div class="toolbar" :class="{ hide: !showToolbar }">
-    <toolbaritem name="Acceuil" route="/" class="item"></toolbaritem>
-    <toolbaritem name="Équipes" route="/teams" class="item"></toolbaritem>
-    <toolbaritem name="Horaires" route="/schedule" class="item"></toolbaritem>
-    <toolbaritem name="À propos" route="/about" class="item" ></toolbaritem>
+    <div class="item">
+      <router-link to="/" class="text">Acceuil</router-link>
+    </div>
+
+    <div v-on:click="toggleTeam()" class="item"> 
+      <p v-if="expandTeam" class="text-toggle">Équipe ▼</p>
+      <p v-else class="text">Équipe ▶</p>
+    </div>
+
+  <div class="item" :class="{ hide: !expandTeam }">
+    <router-link to="/team/approbation" class="text-dropdown">Approbation</router-link>
+  </div>
+
+  <div class="item" :class="{ hide: !expandTeam }">
+    <router-link to="/team/list" class="text-dropdown">Liste</router-link>
+  </div>
+
+  <div class="item">
+    <router-link to="/schedule" class="text">Horaires</router-link>
+  </div>
+
+  <div class="item">
+    <router-link to="/about" class="text">À propos</router-link>
+  </div>
+    
   </div>
 </template>
 
@@ -19,11 +40,72 @@
   height: 100%;
   width: 100%;
 }
+
+.item {
+  user-select: none;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.item .text {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+  margin-bottom: 0px;
+}
+
+.item .text.router-link-exact-active {
+  background-color: @secondaryDark;
+  color: @theme;
+}
+
+.item .text:hover:not(.active) {
+  background-color: @secondary;
+  color: @text;
+}
+
+.item .text-dropdown {
+  display: block;
+  color: black;
+  padding: 10px;
+  text-decoration: none;
+  margin-bottom: 0px;
+  background-color: @dropdownOpen;
+}
+
+.item .text-dropdown.router-link-exact-active {
+  background-color: @secondaryDark;
+  color: @theme;
+}
+
+.item .text-dropdown:hover:not(.active) {
+  background-color: @secondaryDark;
+  color: @text;
+}
+
+.item .text-toggle {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+  margin-bottom: 0px;
+  background-color: @dropdownOpen;
+}
+
+.item .text-toggle.router-link-exact-active {
+  background-color: @secondaryDark;
+  color: @theme;
+}
+
+.item .text-toggle:hover:not(.active) {
+  background-color: @secondary;
+  color: @text;
+}
 </style>
 
 <script>
-import toolbaritem from "@/components/ToolBarItem.vue";
-
 export default {
   name: "ToolBar",
 
@@ -36,12 +118,18 @@ export default {
       showToolbar: {
         required: false,
         default: true
+      },
+      expandTeam: {
+        required: false,
+        default: true
       }
     };
   },
 
-  components: {
-    toolbaritem
+  methods: {
+    toggleTeam: function() {
+      this.expandTeam = !this.expandTeam;
+    }
   },
 
   created: function() {

@@ -1,17 +1,17 @@
 <template>
   <div id="appTeams">
     <filter-sports :filters="['sports', 'leagues']" ref="filter"></filter-sports>
-    <team-approbation-table></team-approbation-table>
+    <team-table></team-table>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import FilterSports from "@/components/FilterSports.vue";
-import TeamApprobationTable from "@/components/TeamApprobationTable.vue";
+import TeamTable from "@/components/TeamTable.vue";
 
 export default {
-  name: "Teams",
+  name: "TeamList",
   data: function() {
     return {
       selectedLeague: "",
@@ -20,7 +20,7 @@ export default {
   },
   components: {
     FilterSports,
-    TeamApprobationTable
+    TeamTable
   }
 };
 </script>
