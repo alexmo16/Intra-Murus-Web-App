@@ -14,20 +14,26 @@
     </div>
     <vue-tuicalendar ref="calendar" :options="options" :schedules="schedules">
     </vue-tuicalendar>
+    <b-modal centered ref="updateMatchModal" title="Match" @ok="updateSchedule">
+      <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+    </b-modal>
+    <b-modal centered ref="createMatchModal" title="Creation d'un Match" @ok="addSchedule">
+      <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { VueTuicalendar } from "@lkmadushan/vue-tuicalendar";
 import "tui-calendar/dist/tui-calendar.min.css";
-import BPopover from "bootstrap-vue/es/components/popover/popover";
+import BModal from "bootstrap-vue/es/components/modal/modal";
 
 export default {
   name: "Schedule",
 
   components: {
     VueTuicalendar,
-    BPopover
+    BModal
   },
 
   props: {
@@ -80,18 +86,26 @@ export default {
     return {
       weekLabel: "",
       currentDate: new Date(),
+      textColor: "#ffffff",
+      backgroundColor: "#00a759",
+      dragBackgroundColor: "#016735",
+
+      selectedSchedule: {},
 
       schedules: [
         {
           id: "1",
           calendarId: "1",
           title: "VolleyBall",
-          location: "Centre sportif",
+          location: "Centre sportif gym A1",
           attendees: ["Bleu", "Rouge"],
           category: "time",
           dueDateClass: "",
           start: "2018-11-19T17:30:00",
-          end: "2018-11-19T19:30:00"
+          end: "2018-11-19T18:30:00",
+          color: "#ffffff",
+          bgColor: "#00a759",
+          dragBgColor: "#016735"
         }
       ],
 
@@ -99,8 +113,8 @@ export default {
         calendarId: "1",
         defaultView: "week",
         taskView: false,
-        useCreationPopup: true,
-        useDetailPopup: true,
+        useCreationPopup: false,
+        useDetailPopup: false,
         scheduleView: ["time"],
         week: {
           daynames: [
@@ -116,6 +130,19 @@ export default {
           narrowWeekend: false,
           hourStart: 15,
           hourStop: 24
+        },
+        theme: {
+          "week.timegridOneHour.height": "90px",
+          "week.timegridHalfHour.height": "45px"
+        },
+        template: {
+          time: function(schedule) {
+            return `${
+              schedule.title
+            }<br><span style="font-size:12px;font-weight:1;">equipes: ${
+              schedule.attendees[0]
+            } vs ${schedule.attendees[1]}</span>`;
+          }
         }
       }
     };
@@ -158,17 +185,26 @@ export default {
         that.schedules.length != []
           ? that.schedules[that.schedules.length - 1].id
           : -1;
-      that.schedules.push({
+      that.selectedSchedule = {
         id: (parseInt(lastScheduleId) + 1).toString(),
         calendarId: "1",
-        title: event.title,
-        location: event.raw.location,
+        title: "",
+        location: "",
+        attendees: ["", ""],
         category: "time",
         dueDateClass: "",
         start: event.start,
-        end: event.end
-      });
-      1;
+        end: event.end,
+        color: that.textColor,
+        bgColor: that.backgroundColor,
+        dragBgColor: that.dragBackgroundColor
+      };
+      that.$refs.createMatchModal.show();
+    });
+
+    this.$refs.calendar.registerEvent("clickSchedule", function(event) {
+      that.selectedSchedule = event.schedule;
+      that.$refs.updateMatchModal.show();
     });
   },
 
@@ -198,6 +234,12 @@ export default {
       } else {
         this.$refs.calendar.fireMethod("prev");
       }
+    },
+
+    updateSchedule: function() {},
+
+    addSchedule: function() {
+      this.schedules.push(this.selectedSchedule);
     }
   }
 };
