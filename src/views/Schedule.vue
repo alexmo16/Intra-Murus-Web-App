@@ -16,9 +16,28 @@
     </vue-tuicalendar>
     <b-modal centered ref="updateMatchModal" title="Match" @ok="updateSchedule">
       <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+      <div slot="modal-footer" class="w-100">
+         <b-btn class="float-right okButton" @click="updateSchedule">
+           OK
+         </b-btn>
+         <b-btn class="float-right deleteButton" @click="deleteSchedule">
+           Effacer
+         </b-btn>
+         <b-btn class="float-right cancelButton" @click="$refs.updateMatchModal.hide()">
+           Annuler
+         </b-btn>
+       </div>      
     </b-modal>
-    <b-modal centered ref="createMatchModal" title="Creation d'un Match" @ok="addSchedule">
+    <b-modal centered ref="createMatchModal" title="Creation d'un Match">
       <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+      <div slot="modal-footer" class="w-100">
+         <b-btn class="float-right okButton" @click="addSchedule">
+           OK
+         </b-btn>        
+         <b-btn class="float-right cancelButton" @click="$refs.createMatchModal.hide()">
+           Annuler
+         </b-btn>
+       </div>
     </b-modal>
   </div>
 </template>
@@ -53,30 +72,6 @@ export default {
           "Octobre",
           "Novembre",
           "Decembre"
-        ];
-      }
-    },
-    hours: {
-      required: false,
-      default: function() {
-        return [
-          { value: 0, text: "8:00" },
-          { value: 1, text: "9:00" },
-          { value: 2, text: "10:00" },
-          { value: 3, text: "11:00" },
-          { value: 4, text: "12:00" },
-          { value: 5, text: "13:00" },
-          { value: 6, text: "14:00" },
-          { value: 7, text: "15:00" },
-          { value: 8, text: "16:00" },
-          { value: 9, text: "17:00" },
-          { value: 10, text: "18:00" },
-          { value: 11, text: "19:00" },
-          { value: 12, text: "20:00" },
-          { value: 13, text: "21:00" },
-          { value: 14, text: "22:00" },
-          { value: 15, text: "23:00" },
-          { value: 16, text: "00:00" }
         ];
       }
     }
@@ -154,20 +149,6 @@ export default {
 
   mounted: function() {
     let that = this;
-    // defined callback when a schedule is delete.
-    this.$refs.calendar.registerEvent("beforeDeleteSchedule", function(event) {
-      let scheduleIndex = that.schedules.findIndex(
-        schedule => schedule.id === event.schedule.id
-      );
-      if (scheduleIndex != -1) {
-        that.schedules.splice(scheduleIndex, 1);
-        that.$refs.calendar.fireMethod(
-          "deleteSchedule",
-          event.schedule.id,
-          event.schedule.calendarId
-        );
-      }
-    });
     // defined callback when a schedule is update.
     this.$refs.calendar.registerEvent("beforeUpdateSchedule", function(event) {
       event.schedule.start = event.start;
@@ -236,10 +217,28 @@ export default {
       }
     },
 
-    updateSchedule: function() {},
+    updateSchedule: function() {
+      this.$refs.updateMatchModal.hide();
+    },
 
     addSchedule: function() {
       this.schedules.push(this.selectedSchedule);
+      this.$refs.createMatchModal.hide();
+    },
+
+    deleteSchedule: function() {
+      let scheduleIndex = this.schedules.findIndex(
+        schedule => schedule.id === this.selectedSchedule.id
+      );
+      if (scheduleIndex != -1) {
+        this.schedules.splice(scheduleIndex, 1);
+        this.$refs.calendar.fireMethod(
+          "deleteSchedule",
+          this.selectedSchedule.id,
+          this.selectedSchedule.calendarId
+        );
+      }
+      this.$refs.updateMatchModal.hide();
     }
   }
 };
@@ -253,6 +252,21 @@ export default {
   height: 45px;
   color: @secondary;
   @buttonswidth: 25px;
+
+  .cancelButton {
+    margin-right: 10px;
+  }
+
+  .deleteButton {
+    margin-right: 10px;
+    background-color: red;
+    border-color: red;
+  }
+
+  .okButton {
+    background-color: @theme;
+    border-color: @theme;
+  }
 
   #calendarHeader {
     display: inline-flex;
