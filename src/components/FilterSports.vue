@@ -4,6 +4,7 @@
     <b-form-select v-model="selectedSeason" :options="seasons" id="saison" v-if="filters.indexOf('seasons') !== -1" class="mb-3 combobox"/>
     <b-form-select v-model="selectedSport" :options="sports" id="sport" v-if="filters.indexOf('sports') !== -1" class="mb-3 combobox"/>
     <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" v-if="filters.indexOf('leagues') !== -1" :disabled="selectedSport === ''" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedField" :options="fields" id="terrain" v-if="filters.indexOf('fields') !== -1" class="mb-3 combobox"/>
   </div>
 </template>
 
@@ -61,7 +62,7 @@ export default {
     filters: {
       required: false,
       default: function() {
-        return ["years", "seasons", "leagues", "sports"];
+        return ["years", "seasons", "leagues", "sports", "fields"];
       }
     },
     defaultSport: {
@@ -85,8 +86,10 @@ export default {
       selectedYear: new Date().getFullYear(),
       selectedSeason: "AUTOMNE",
       selectedLeague: "",
+      selectedField: "",
       sports: [that.defaultSport],
       leagues: [that.defaultLeague],
+      fields: [],
       seasons: [
         { value: "AUTOMNE", text: "Automne" },
         { value: "HIVER", text: "Hiver" },

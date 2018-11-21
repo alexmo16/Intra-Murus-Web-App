@@ -1,6 +1,7 @@
 <template>
   <div id="appSchedule">
     <div id="calendarHeader">
+      <filter-sports :filters="['fields']" ref="filter" class="filter"></filter-sports>
       <div class="lastWeekContainer">
         <img id="lastWeek" src="../assets/down-arrow.svg" @click.stop="changeWeek($event)"/>
       </div>
@@ -74,13 +75,16 @@ import "tui-calendar/dist/tui-calendar.min.css";
 import BModal from "bootstrap-vue/es/components/modal/modal";
 import InputGroup from "bootstrap-vue/es/components/input-group/input-group";
 
+import FilterSports from "@/components/FilterSports";
+
 export default {
   name: "Schedule",
 
   components: {
     VueTuicalendar,
     BModal,
-    InputGroup
+    InputGroup,
+    FilterSports
   },
 
   props: {
@@ -287,6 +291,12 @@ export default {
   height: 45px;
   color: @secondary;
   @buttonswidth: 25px;
+
+  .filter {
+    margin-top: -8px;
+    z-index: 2000;
+    padding-right: 20px;
+  }
 
   .cancelButton {
     margin-right: 10px;
