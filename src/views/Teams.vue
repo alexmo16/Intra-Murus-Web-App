@@ -1,6 +1,6 @@
 <template>
   <div id="appTeams">
-    <filter-sports :filters="['seasons', 'sports', 'leagues']" ref="filter"></filter-sports>
+    <filter-sports :filters="['sports', 'leagues']" ref="filter"></filter-sports>
     <team-approbation-table></team-approbation-table>
   </div>
 </template>
@@ -15,8 +15,7 @@ export default {
   data: function() {
     return {
       selectedLeague: "",
-      selectedSport: "",
-      selectedSeason: ""
+      selectedSport: ""
     };
   },
   components: {
