@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
 import sinon from "sinon";
 import TeamApprobationTable from "@/components/TeamApprobationTable.vue";
-import Teams from "@/views/Teams.vue";
+import Teams from "@/views/Approbation.vue";
 
 describe("TeamApprovationTable.vue", function() {
   let wrapper;

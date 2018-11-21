@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
-import Teams from "./views/Teams.vue";
+import Approbation from "./views/Approbation.vue";
+import TeamList from "./views/TeamList.vue";
 import Schedule from "./views/Schedule.vue";
 import About from "./views/About.vue";
 import Error404 from "./views/Error404.vue";
@@ -23,9 +24,14 @@ const router = new VueRouter({
       component: Home
     },
     {
-      path: "/teams",
-      name: "teams",
-      component: Teams
+      path: "/team/list",
+      name: "teamlist",
+      component: TeamList
+    },
+    {
+      path: "/team/approbation",
+      name: "approbation",
+      component: Approbation
     },
     {
       path: "/schedule",
