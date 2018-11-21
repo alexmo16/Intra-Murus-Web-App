@@ -242,6 +242,12 @@ export default {
       let sunday = this.getSunday(this.currentDate);
       this.sundayDate = sunday;
       this.sundayDate.setHours(0, 0, 0);
+      this.startWeekEpoch = Math.ceil(this.sundayDate.getTime() / 1000);
+      let tempDate = new Date(this.sundayDate);
+      this.stopWeekEpoch =
+        new Date(tempDate.setDate(tempDate.getDate() + 7)).getTime() / 1000;
+      this.stopWeekEpoch = Math.ceil(this.stopWeekEpoch);
+
       this.weekLabel = `${sunday.getDate()} ${
         this.months[sunday.getMonth()]
       } ${this.currentDate.getFullYear()}`;
@@ -251,12 +257,6 @@ export default {
       let incrementer = event.target.id === "nextWeek" ? 7 : -7;
       this.currentDate.setDate(this.currentDate.getDate() + incrementer);
       this.changeWeekLabel();
-
-      this.startWeekEpoch = Math.ceil(this.sundayDate.getTime() / 1000);
-      let tempDate = this.sundayDate;
-      this.stopWeekEpoch =
-        new Date(tempDate.setDate(tempDate.getDate() + 7)).getTime() / 1000;
-      this.stopWeekEpoch = Math.ceil(this.stopWeekEpoch);
 
       if (incrementer > 0) {
         this.$refs.calendar.fireMethod("next");
