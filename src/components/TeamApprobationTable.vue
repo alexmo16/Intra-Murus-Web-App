@@ -159,7 +159,7 @@ export default {
 
     sendDecision: function(event) {
       event.preventDefault();
-      let statut = this.isRefuseClicked ? "REFUSE" : "CONFIRME";
+      let statut = this.isRefuseClicked ? "REFUSE" : "APPROUVE";
       let that = this;
       this.updateStatutApprobation(statut, function(error) {
         if (error) {
