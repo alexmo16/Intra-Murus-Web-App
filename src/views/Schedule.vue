@@ -14,8 +14,21 @@
     </div>
     <vue-tuicalendar ref="calendar" :options="options" :schedules="schedules">
     </vue-tuicalendar>
+
     <b-modal centered ref="updateMatchModal" title="Match" @ok="updateSchedule">
-      <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+      <b-input-group size="sm" prepend="Sport" class="matchInput">
+        <b-form-input :value="selectedSchedule.title" v-model="selectedSchedule.title"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Ligue" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.away" v-model="selectedSchedule.raw.away"></b-form-input>
+      </b-input-group>
+
       <div slot="modal-footer" class="w-100">
          <b-btn class="float-right okButton" @click="updateSchedule">
            OK
@@ -28,8 +41,21 @@
          </b-btn>
        </div>      
     </b-modal>
+
     <b-modal centered ref="createMatchModal" title="Creation d'un Match">
-      <span>Êtes-vous sûr de vouloir approuver cette équipe?</span>
+      <b-input-group size="sm" prepend="Sport" class="matchInput">
+        <b-form-input :value="selectedSchedule.title" v-model="selectedSchedule.title"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Ligue" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home"></b-form-input>
+      </b-input-group>
+      <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
+        <b-form-input :value="selectedSchedule.raw.away" v-model="selectedSchedule.raw.away"></b-form-input>
+      </b-input-group>
+
       <div slot="modal-footer" class="w-100">
          <b-btn class="float-right okButton" @click="addSchedule">
            OK
@@ -46,13 +72,15 @@
 import { VueTuicalendar } from "@lkmadushan/vue-tuicalendar";
 import "tui-calendar/dist/tui-calendar.min.css";
 import BModal from "bootstrap-vue/es/components/modal/modal";
+import InputGroup from "bootstrap-vue/es/components/input-group/input-group";
 
 export default {
   name: "Schedule",
 
   components: {
     VueTuicalendar,
-    BModal
+    BModal,
+    InputGroup
   },
 
   props: {
@@ -85,24 +113,17 @@ export default {
       backgroundColor: "#00a759",
       dragBackgroundColor: "#016735",
 
-      selectedSchedule: {},
-
-      schedules: [
-        {
-          id: "1",
-          calendarId: "1",
-          title: "VolleyBall",
-          location: "Centre sportif gym A1",
-          attendees: ["Bleu", "Rouge"],
-          category: "time",
-          dueDateClass: "",
-          start: "2018-11-19T17:30:00",
-          end: "2018-11-19T18:30:00",
-          color: "#ffffff",
-          bgColor: "#00a759",
-          dragBgColor: "#016735"
+      selectedSchedule: {
+        raw: {
+          home: "",
+          away: "",
+          league: "",
+          startEpoch: 0,
+          stopEpoch: 0
         }
-      ],
+      },
+
+      schedules: [],
 
       options: {
         calendarId: "1",
@@ -134,9 +155,9 @@ export default {
           time: function(schedule) {
             return `${
               schedule.title
-            }<br><span style="font-size:12px;font-weight:1;">equipes: ${
-              schedule.attendees[0]
-            } vs ${schedule.attendees[1]}</span>`;
+            }<br><span style="font-size:12px;font-weight:1;">Ligue: ${
+              schedule.raw.league
+            }<br>equipes: ${schedule.raw.home} vs ${schedule.raw.away}</span>`;
           }
         }
       }
@@ -171,14 +192,18 @@ export default {
         calendarId: "1",
         title: "",
         location: "",
-        attendees: ["", ""],
         category: "time",
         dueDateClass: "",
         start: event.start,
         end: event.end,
         color: that.textColor,
         bgColor: that.backgroundColor,
-        dragBgColor: that.dragBackgroundColor
+        dragBgColor: that.dragBackgroundColor,
+        raw: {
+          home: "",
+          away: "",
+          league: ""
+        }
       };
       that.$refs.createMatchModal.show();
     });
@@ -218,7 +243,17 @@ export default {
     },
 
     updateSchedule: function() {
+      let index = this.schedules.findIndex(
+        schedule => schedule.id === this.selectedSchedule.id
+      );
+      this.schedules[index] = this.selectedSchedule;
       this.$refs.updateMatchModal.hide();
+      this.$refs.calendar.fireMethod(
+        "updateSchedule",
+        this.selectedSchedule.id,
+        "1",
+        this.selectedSchedule
+      );
     },
 
     addSchedule: function() {
@@ -266,6 +301,11 @@ export default {
   .okButton {
     background-color: @theme;
     border-color: @theme;
+  }
+
+  .matchInput {
+    width: 300px;
+    margin-bottom: 10px;
   }
 
   #calendarHeader {
