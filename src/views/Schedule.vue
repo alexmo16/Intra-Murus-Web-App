@@ -31,14 +31,11 @@
       </b-input-group>
 
       <div slot="modal-footer" class="w-100">
-         <b-btn class="float-right okButton" @click="updateSchedule">
-           OK
+         <b-btn class="float-right cancelButton" @click="$refs.updateMatchModal.hide()">
+           Fermer
          </b-btn>
          <b-btn class="float-right deleteButton" @click="deleteSchedule">
            Effacer
-         </b-btn>
-         <b-btn class="float-right cancelButton" @click="$refs.updateMatchModal.hide()">
-           Annuler
          </b-btn>
        </div>      
     </b-modal>
@@ -66,7 +63,7 @@
       </b-form-select>        
 
       <div slot="modal-footer" class="w-100">
-         <b-btn class="float-right okButton" @click="addSchedule">
+         <b-btn class="float-right okButton" @click="addSchedule" :disabled="selectedAwayTeam === selectedHomeTeam || selectedAwayTeam === null || selectedHomeTeam === null" > 
            OK
          </b-btn>        
          <b-btn class="float-right cancelButton" @click="$refs.createMatchModal.hide()">
