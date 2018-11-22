@@ -24,10 +24,10 @@
         <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput">
-        <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home"></b-form-input>
+        <b-form-input :value="selectedSchedule.raw.home.name" v-model="selectedSchedule.raw.home.name"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
-        <b-form-input :value="selectedSchedule.raw.away" v-model="selectedSchedule.raw.away"></b-form-input>
+        <b-form-input :value="selectedSchedule.raw.away.name" v-model="selectedSchedule.raw.away.name"></b-form-input>
       </b-input-group>
 
       <div slot="modal-footer" class="w-100">
@@ -124,12 +124,19 @@ export default {
 
       selectedSchedule: {
         raw: {
-          home: "",
-          away: "",
+          home: {
+            name: "",
+            id: 0
+          },
+          away: {
+            name: "",
+            id: 0
+          },
           league: "",
           idMatch: 0,
           startEpoch: 0,
-          stopEpoch: 0
+          stopEpoch: 0,
+          arbitre: ""
         }
       },
       schedules: [],
@@ -167,7 +174,9 @@ export default {
               schedule.title
             }<br><span style="font-size:12px;font-weight:1;">Ligue: ${
               schedule.raw.league
-            }<br>equipes: ${schedule.raw.home} vs ${schedule.raw.away}</span>`;
+            }<br>equipes: ${schedule.raw.home.name} vs ${
+              schedule.raw.away.name
+            }</span>`;
           }
         }
       }
@@ -352,12 +361,19 @@ export default {
                   bgColor: that.backgroundColor,
                   dragBgColor: that.dragBackgroundColor,
                   raw: {
-                    home: team.cote === "HOME" ? nomEquipe : "",
-                    away: team.cote === "AWAY" ? nomEquipe : "",
+                    home: {
+                      name: team.cote === "HOME" ? nomEquipe : "",
+                      id: team.idEquipe
+                    },
+                    away: {
+                      name: team.cote === "AWAY" ? nomEquipe : "",
+                      id: team.idEquipe
+                    },
                     league: team.nomLigue,
                     idMatch: team.idMatch,
                     startEpoch: team.dateDebut,
-                    stopEpoch: team.dateFin
+                    stopEpoch: team.dateFin,
+                    arbitre: team.arbitre
                   }
                 };
 
@@ -367,9 +383,15 @@ export default {
                   schedule => schedule.raw.idMatch === team.idMatch
                 );
                 if (team.cote === "HOME") {
-                  that.schedules[scheduleIndex].raw.home = nomEquipe;
+                  that.schedules[scheduleIndex].raw.home = {
+                    name: nomEquipe,
+                    id: team.idEquipe
+                  };
                 } else {
-                  that.schedules[scheduleIndex].raw.away = nomEquipe;
+                  that.schedules[scheduleIndex].raw.away = {
+                    name: nomEquipe,
+                    id: team.idEquipe
+                  };
                 }
               }
             });
