@@ -44,6 +44,12 @@
     </b-modal>
 
     <b-modal centered ref="createMatchModal" title="Creation d'un Match">
+    <b-form-select v-model="selectedSport" :options="sports" id="sport" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedLeague" :options="leagues" id="ligue" :disabled="selectedSport === ''" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSchedule.raw.home.idEquipe" :options="fields" id="equipe receveur" :disabled="selectedLeague === ''" class="mb-3 combobox"/>
+    <b-form-select v-model="selectedSchedule.raw.away.idEquipe" :options="fields" id="equipe visiteur" :disabled="selectedLeague === ''" class="mb-3 combobox"/>
+
+      
       <b-input-group size="sm" prepend="Sport" class="matchInput">
         <b-form-input :value="selectedSchedule.title" v-model="selectedSchedule.title"></b-form-input>
       </b-input-group>
@@ -51,7 +57,7 @@
         <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput" disabled>
-        <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home"></b-form-input>
+        <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home.idEquipe"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
         <b-form-input :value="selectedSchedule.raw.away" v-model="selectedSchedule.raw.away"></b-form-input>
@@ -108,11 +114,51 @@ export default {
         ];
       }
     },
-    isReadOnly: true
+    isReadOnly: true,
+    filters: {
+      required: false,
+      default: function() {
+        return ["years", "seasons", "leagues", "sports"];
+      }
+    },
+    defaultSport: {
+      required: false,
+      default: function() {
+        return { value: "", text: "Sport" };
+      }
+    },
+    defaultLeague: {
+      required: false,
+      default: function() {
+        return { value: "", text: "Ligue" };
+      }
+    }
   },
 
   data() {
+    let that = this;
     return {
+      selectedRow: {},
+
+      fields: ["equipes"],
+      items: [],
+      selectedSport: "",
+      selectedYear: new Date().getFullYear(),
+      selectedSeason: "AUTOMNE",
+      selectedLeague: "",
+      sports: [that.defaultSport],
+      leagues: [that.defaultLeague],
+      seasons: [
+        { value: "AUTOMNE", text: "Automne" },
+        { value: "HIVER", text: "Hiver" },
+        { value: "ETE", text: "Été" }
+      ],
+      years: [
+        { value: "2016", text: "2016" },
+        { value: "2017", text: "2017" },
+        { value: "2018", text: "2018" }
+      ],
+
       weekLabel: "",
       currentDate: new Date(),
       sundayDate: null,
@@ -186,6 +232,23 @@ export default {
 
   created: function() {
     this.changeWeekLabel();
+    let that = this;
+    this.getSportsValues(function(error) {
+      if (error) {
+        return error;
+      }
+
+      error = that.getLeaguesValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+
+      if (error) {
+        return error;
+      }
+    });
+    this._getFilteredApprobations();
   },
 
   mounted: function() {
@@ -406,6 +469,79 @@ export default {
           callback(error);
           Promise.reject(error);
         });
+    },
+
+    getSportsValues: function(callback) {
+      let options = {
+        params: {
+          annee: this.selectedYear,
+          periode: this.selectedSeason
+        }
+      };
+
+      axios
+        .get("/bs/api/filtres/sports", options)
+        .then(response => {
+          let error;
+          if (response && response.data) {
+            this.updateSportsValues(response.data);
+          } else {
+            throw new Error("Unable to get sports values");
+          }
+
+          callback(error);
+        })
+        .catch(error => {
+          callback(error);
+          Promise.reject(error);
+        });
+    },
+
+    getLeaguesValues: function(callback) {
+      let options = {
+        params: {
+          annee: this.selectedYear,
+          periode: this.selectedSeason,
+          sport: this.selectedSport
+        }
+      };
+
+      axios
+        .get("/bs/api/filtres/ligues", options)
+        .then(response => {
+          let error;
+          if (response && response.data) {
+            this.updateLeaguesValues(response.data);
+          } else {
+            throw new Error("Unable to get leagues values");
+          }
+
+          callback(error);
+        })
+        .catch(error => {
+          callback(error);
+          Promise.reject(error);
+        });
+    },
+
+    updateSportsValues: function(sportsValues) {
+      let that = this;
+      this.sports = [this.defaultSport];
+      sportsValues.forEach(function(sportValue) {
+        let sportText = sportValue.replace(/_+/g, " ").toLowerCase();
+        sportText = sportText[0].toUpperCase() + sportText.slice(1);
+        that.sports.push({ value: sportValue, text: sportText });
+      });
+    },
+
+    updateLeaguesValues: function(leaguesValues) {
+      let that = this;
+      this.leagues = [this.defaultLeague];
+      leaguesValues.forEach(function(leagueValue) {
+        let leagueText = leagueValue.replace(/_+/g, " ");
+        leagueText = leagueText[0].toUpperCase() + leagueText.slice(1);
+        that.leagues.push({ value: leagueValue, text: leagueText });
+      });
     }
   },
 
@@ -415,6 +551,124 @@ export default {
         this.schedules = [];
         this.getSchedules(function() {});
       }
+    },
+    selectedSport: function() {
+      this.selectedLeague = "";
+      this.getLeaguesValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+    },
+
+    selectedSeason: function() {
+      this.selectedSport = "";
+      this.getSportsValues(function(error) {
+        if (error) {
+          return error;
+        }
+      });
+    },
+
+    "this.filter.selectedSeason": function() {
+      this._getFilteredApprobations();
+    },
+    "this.filter.selectedSport": function() {
+      this._getFilteredApprobations();
+    },
+    "this.filter.selectedLeague": function() {
+      this._getFilteredApprobations();
+    }
+  },
+
+  resetAttributes: function() {
+    this.selectedRow = {};
+  },
+
+  updateStatutApprobation: function(statut, callback) {
+    let options = {
+      idEquipe: this.selectedRow.item.teamId,
+      statutApprobation: statut
+    };
+
+    axios
+      .put("/bs/api/equipes/updateStatutApprobation", options)
+      .then(response => {
+        if (response && response.status == 200) {
+          callback();
+        } else {
+          return new Error();
+        }
+      })
+      .catch(error => {
+        Promise.reject(error);
+      });
+  },
+
+  _removeRowFromTable: function() {
+    this.items.splice(this.selectedRow.index, 1);
+  },
+
+  _getFilteredApprobations: function() {
+    let options = {
+      params: {
+        annee: this.filter.selectedYear,
+        periode: this.filter.selectedSeason,
+        sport: this.filter.selectedSport,
+        nomLigue: this.filter.selectedLeague,
+        statutApprobation: "APPROUVE"
+      }
+    };
+
+    axios
+      .get("/bs/api/equipes/getEquipeApprobationView", options)
+      .then(response => {
+        if (response && response.data) {
+          this._updateContent(response.data);
+        }
+      })
+      .catch(error => {
+        Promise.reject(error);
+      });
+  },
+
+  _updateContent: function(players) {
+    if (players && players.length > 0) {
+      players.forEach(player => {
+        let playerTeamIndex = this.items.findIndex(
+          item => item.teamName === player.nomEquipe
+        );
+
+        let teamMemberName = `${player.prenom} ${player.nom}`;
+        if (player.cip === player.cipCapitaine) {
+          teamMemberName += ` (Capitaine)`;
+        }
+
+        if (playerTeamIndex === -1) {
+          let teamTitle = player.nomEquipe;
+          if (this.filter.selectedSport === "") {
+            let sport = player.sport.replace(/_+/g, " ").toLowerCase();
+            teamTitle += ` (${sport} ${player.nomLigue})`;
+          }
+
+          this.items.push({
+            teamId: player.idEquipe,
+            teamTitle: teamTitle,
+            teamName: player.nomEquipe,
+            teamMembers: [teamMemberName],
+            _showDetails: false
+          });
+        } else {
+          let isPlayerPresent =
+            this.items[playerTeamIndex].teamMembers.indexOf(teamMemberName) !=
+            -1;
+          if (!isPlayerPresent) {
+            this.items[playerTeamIndex].teamMembers.push(teamMemberName);
+          }
+        }
+      });
+    } else {
+      this.items = [];
     }
   }
 };
@@ -428,6 +682,39 @@ export default {
   height: 45px;
   color: @secondary;
   @buttonswidth: 25px;
+
+  .filterContainer {
+    display: inline;
+  }
+
+  .combobox {
+    max-width: 180px;
+    min-width: 100px;
+    margin-right: 25px;
+    &:focus {
+      border-color: @themDark;
+      box-shadow: 0 0 0.2rem @theme-box-shadow;
+      -webkit-box-shadow: 0 0 0.2rem @theme-box-shadow;
+    }
+  }
+  @media screen and (max-width: 1150px) {
+    .combobox {
+      max-width: 100px;
+      margin-right: 8px;
+    }
+  }
+
+  @media screen and (max-width: 1450px) {
+    .combobox {
+      max-width: 150px;
+    }
+  }
+
+  .filterContainer * {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
   .filter {
     margin-top: -7px;

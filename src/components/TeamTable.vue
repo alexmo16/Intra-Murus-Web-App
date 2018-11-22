@@ -11,13 +11,6 @@
       </div>
       </div>
     </template>
-    <template slot="row-details" slot-scope="row">
-      <b-card>
-        <b-row v-for="player in row.item.teamMembers" :key="player" class="player">
-          <b-col>{{ player }}</b-col>
-        </b-row>
-      </b-card>
-    </template>
   </b-table>
   </div>
 </template>
@@ -119,8 +112,6 @@ export default {
   },
   data: function() {
     return {
-      isRefuseClicked: false,
-      isAcceptClicked: false,
       selectedRow: {},
 
       fields: ["equipes"],
@@ -132,8 +123,6 @@ export default {
   },
   methods: {
     resetAttributes: function() {
-      this.isAcceptClicked = false;
-      this.isRefuseClicked = false;
       this.selectedRow = {};
     },
 
