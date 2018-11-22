@@ -1,14 +1,10 @@
 <template>
   <div>
     <b-table :items="items" :fields="fields" class="tableContainer" show-empty empty-text="Il n'y a pas de demandes pour l'instant">
-    <template slot="approbations" slot-scope="row">
+    <template slot="equipes" slot-scope="row">
       <div class="rowContainer" @click.stop="row.toggleDetails">
       <div class="labelContainer">
         <span>{{ row.item.teamTitle }}</span>
-      </div>
-      <div class="approbationContainer">
-        <img id="acceptButton" :class="{ hide: !row.detailsShowing }" src="../assets/green-check.svg" @click.stop="showModal($event, row)"/>
-        <img id="refuseButton" :class="{ hide: !row.detailsShowing }" src="../assets/red-cancel.svg" @click.stop="showModal($event,  row)"/>
       </div>
       <div class="expandContainer">
         <img :class="{ open: row.detailsShowing }" src="../assets/down-arrow.svg" class="buttonExpand"/>
@@ -23,10 +19,6 @@
       </b-card>
     </template>
   </b-table>
-  <b-modal centered ref="confirmationModal" title="Confirmation" @ok="sendDecision" @cancel="resetAttributes">
-    <span v-if="this.isAcceptClicked">Êtes-vous sûr de vouloir approuver cette équipe?</span>
-    <span v-if="this.isRefuseClicked">Êtes-vous sûr de vouloir refuser cette équipe?</span>
-  </b-modal>
   </div>
 </template>
 
@@ -145,31 +137,6 @@ export default {
       this.selectedRow = {};
     },
 
-    showModal: function(event, row) {
-      this.isRefuseClicked = event.currentTarget.id === "refuseButton";
-      this.isAcceptClicked = !this.isRefuseClicked;
-      this.selectedRow = row;
-      this.$refs.confirmationModal.show();
-    },
-
-    hideModal: function() {
-      this.resetAttributes();
-      this.$refs.confirmationModal.hide();
-    },
-
-    sendDecision: function(event) {
-      event.preventDefault();
-      let statut = this.isRefuseClicked ? "REFUSE" : "APPROUVE";
-      let that = this;
-      this.updateStatutApprobation(statut, function(error) {
-        if (error) {
-          return error;
-        }
-        that.hideModal();
-        that._removeRowFromTable();
-      });
-    },
-
     updateStatutApprobation: function(statut, callback) {
       let options = {
         idEquipe: this.selectedRow.item.teamId,
@@ -201,7 +168,7 @@ export default {
           periode: this.$parent.$refs.filter.selectedSeason,
           sport: this.$parent.$refs.filter.selectedSport,
           nomLigue: this.$parent.$refs.filter.selectedLeague,
-          statutApprobation: "PRET_A_APPROUVER"
+          statutApprobation: "APPROUVE"
         }
       };
 
