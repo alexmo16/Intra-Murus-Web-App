@@ -2,7 +2,7 @@
   <div class="filterContainer">
     <b-form-select v-model="selectedField" :options="fields" id="terrain" class="mb-3 combobox">
       <template slot="first">
-        <option :value="null" disabled>Choisir un terrain</option>
+        <option :value="null" disabled>Terrain</option>
       </template>
     </b-form-select>
   </div>
