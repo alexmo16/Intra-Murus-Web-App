@@ -121,12 +121,7 @@ export default {
 
   methods: {
     getSportsValues: function(callback) {
-      let options = {
-        params: {
-          annee: this.selectedYear,
-          periode: this.selectedSeason
-        }
-      };
+      let options = {};
 
       axios
         .get("/bs/api/filtres/sports", options)
@@ -149,8 +144,6 @@ export default {
     getLeaguesValues: function(callback) {
       let options = {
         params: {
-          annee: this.selectedYear,
-          periode: this.selectedSeason,
           sport: this.selectedSport
         }
       };
