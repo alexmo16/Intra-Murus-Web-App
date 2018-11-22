@@ -44,7 +44,7 @@
     </b-modal>
 
     <b-modal centered ref="createMatchModal" title="Creation d'un Match">
-      <!-- <b-form-select v-model="selectedSport" :options="sports" id="sport" class="mb-3 combobox">
+      <b-form-select v-model="selectedSport" :options="sports" id="sport" class="mb-3 combobox">
         <template slot="first">
           <option :value="null" disabled>Sport</option>
         </template>
@@ -63,7 +63,7 @@
         <template slot="first">
           <option :value="null" disabled>Visiteur</option>
         </template>
-      </b-form-select>         -->
+      </b-form-select>        
 
       <div slot="modal-footer" class="w-100">
          <b-btn class="float-right okButton" @click="addSchedule">
@@ -266,9 +266,17 @@ export default {
           bgColor: that.backgroundColor,
           dragBgColor: that.dragBackgroundColor,
           raw: {
-            home: "",
-            away: "",
-            league: ""
+            home: {
+              name: "",
+              id: 0
+            },
+            away: {
+              name: "",
+              id: 0
+            },
+            league: "",
+            startEpoch: Math.floor(event.start.getTime() / 1000),
+            stopEpoch: Math.floor(event.end.getTime() / 1000)
           }
         };
         that.$refs.createMatchModal.show();
@@ -335,8 +343,54 @@ export default {
     },
 
     addSchedule: function() {
-      this.schedules.push(this.selectedSchedule);
-      this.$refs.createMatchModal.hide();
+      let options = {
+        arbitre: "test1234",
+        dateDebut: this.selectedSchedule.raw.startEpoch,
+        dateFin: this.selectedSchedule.raw.stopEpoch,
+        nomLigue: this.selectedLeague,
+        sport: this.selectedSport,
+        terrain: this.selectedField,
+        idEquipeAway: this.selectedAwayTeam,
+        idEquipeHome: this.selectedHomeTeam
+      };
+      let sportIndex = this.sports.findIndex(
+        sport => sport.value === this.selectedSport
+      );
+      let homeIndex = this.teams.findIndex(
+        team => team.value === this.selectedHomeTeam
+      );
+      let awayIndex = this.teams.findIndex(
+        team => team.value === this.selectedAwayTeam
+      );
+
+      this.selectedSchedule.title = this.sports[sportIndex].text;
+      this.selectedSchedule.raw.league = this.selectedLeague;
+      this.selectedSchedule.raw.home = {
+        name: this.teams[homeIndex].text
+      };
+      this.selectedSchedule.raw.away = {
+        name: this.teams[awayIndex].text
+      };
+      let that = this;
+      axios
+        .post("/bs/api/matchs/createMatch", options)
+        .then(response => {
+          if (response) {
+            that.$refs.createMatchModal.hide();
+            that.schedules.push(that.selectedSchedule);
+            that.$refs.calendar.fireMethod(
+              "updateSchedule",
+              that.selectedSchedule.id,
+              "1",
+              that.selectedSchedule
+            );
+          } else {
+            throw new Error("Unable to create matchs");
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
     },
 
     deleteSchedule: function() {
