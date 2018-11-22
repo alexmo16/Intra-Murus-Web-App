@@ -117,13 +117,19 @@ export default {
     return {
       showToolbar: {
         required: false,
+        type: Boolean,
         default: true
       },
       expandTeam: {
         required: false,
-        default: true
+        type: Boolean,
+        default: false
       }
     };
+  },
+
+  mounted: function() {
+    this.expandTeam = false;
   },
 
   methods: {
