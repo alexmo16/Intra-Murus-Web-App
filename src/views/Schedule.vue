@@ -197,13 +197,33 @@ export default {
       let index = that.schedules.findIndex(
         schedule => schedule.id === event.schedule.id
       );
+      event.schedule.raw.startEpoch = Math.floor(event.start.getTime() / 1000);
+      event.schedule.raw.stopEpoch = Math.floor(event.end.getTime() / 1000);
+
       that.schedules[index] = event.schedule;
-      that.$refs.calendar.fireMethod(
-        "updateSchedule",
-        event.schedule.id,
-        "1",
-        event.schedule
-      );
+
+      let options = {
+        idMatch: that.schedules[index].raw.idMatch,
+        dateDebut: that.schedules[index].raw.startEpoch,
+        dateFin: that.schedules[index].raw.stopEpoch
+      };
+      axios
+        .put("/bs/api/matchs/updateMatch", options)
+        .then(response => {
+          if (response && response.data) {
+            that.$refs.calendar.fireMethod(
+              "updateSchedule",
+              event.schedule.id,
+              "1",
+              event.schedule
+            );
+          } else {
+            throw new Error("Unable to get matchs");
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
     });
     // defined callback when a schedule is create.
     this.$refs.calendar.registerEvent("beforeCreateSchedule", function(event) {
@@ -310,7 +330,24 @@ export default {
           this.selectedSchedule.calendarId
         );
       }
-      this.$refs.updateMatchModal.hide();
+
+      let options = {
+        params: {
+          idMatch: this.selectedSchedule.raw.idMatch
+        }
+      };
+      axios
+        .delete("/bs/api/matchs/deleteMatch", options)
+        .then(response => {
+          if (response && response.data) {
+            this.$refs.updateMatchModal.hide();
+          } else {
+            throw new Error("Unable to get matchs");
+          }
+        })
+        .catch(error => {
+          Promise.reject(error);
+        });
     },
 
     getSchedules: function(callback) {
