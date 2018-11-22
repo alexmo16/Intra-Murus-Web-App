@@ -11,6 +11,13 @@
       </div>
       </div>
     </template>
+    <template slot="row-details" slot-scope="row">
+      <b-card>
+        <b-row v-for="player in row.item.teamMembers" :key="player" class="player">
+          <b-col>{{ player }}</b-col>
+        </b-row>
+      </b-card>
+    </template>
   </b-table>
   </div>
 </template>
