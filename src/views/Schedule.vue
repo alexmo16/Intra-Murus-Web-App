@@ -18,16 +18,16 @@
 
     <b-modal centered ref="updateMatchModal" title="Match" @ok="updateSchedule">
       <b-input-group size="sm" prepend="Sport" class="matchInput">
-        <b-form-input :value="selectedSchedule.title" v-model="selectedSchedule.title"></b-form-input>
+        <b-form-input :disabled="true" :value="selectedSchedule.title" v-model="selectedSchedule.title"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Ligue" class="matchInput">
-        <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
+        <b-form-input :disabled="true" :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput">
-        <b-form-input :value="selectedSchedule.raw.home.name" v-model="selectedSchedule.raw.home.name"></b-form-input>
+        <b-form-input :disabled="true" :value="selectedSchedule.raw.home.name" v-model="selectedSchedule.raw.home.name"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
-        <b-form-input :value="selectedSchedule.raw.away.name" v-model="selectedSchedule.raw.away.name"></b-form-input>
+        <b-form-input :disabled="true" :value="selectedSchedule.raw.away.name" v-model="selectedSchedule.raw.away.name"></b-form-input>
       </b-input-group>
 
       <div slot="modal-footer" class="w-100">
@@ -50,7 +50,7 @@
       <b-input-group size="sm" prepend="Ligue" class="matchInput">
         <b-form-input :value="selectedSchedule.raw.league" v-model="selectedSchedule.raw.league"></b-form-input>
       </b-input-group>
-      <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput">
+      <b-input-group size="sm" prepend="Equipe Receveur" class="matchInput" disabled>
         <b-form-input :value="selectedSchedule.raw.home" v-model="selectedSchedule.raw.home"></b-form-input>
       </b-input-group>
       <b-input-group size="sm" prepend="Equipe Visiteur" class="matchInput">
@@ -107,7 +107,8 @@ export default {
           "Decembre"
         ];
       }
-    }
+    },
+    isReadOnly: true
   },
 
   data() {
