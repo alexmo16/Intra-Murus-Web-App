@@ -31,10 +31,10 @@
       </b-input-group>
 
       <div slot="modal-footer" class="w-100">
-         <b-btn class="float-right cancelButton" @click="$refs.updateMatchModal.hide()">
+         <b-btn class="float-right cancelButton" :disabled="disableButton" @click="$refs.updateMatchModal.hide()">
            Fermer
          </b-btn>
-         <b-btn class="float-right deleteButton" @click="deleteSchedule">
+         <b-btn class="float-right deleteButton" :disabled="disableButton" @click="deleteSchedule">
            Effacer
          </b-btn>
        </div>      
@@ -63,10 +63,10 @@
       </b-form-select>        
 
       <div slot="modal-footer" class="w-100">
-         <b-btn class="float-right okButton" @click="addSchedule" :disabled="selectedAwayTeam === selectedHomeTeam || selectedAwayTeam === null || selectedHomeTeam === null" > 
+         <b-btn class="float-right okButton" @click="addSchedule" :disabled="selectedAwayTeam === selectedHomeTeam || selectedAwayTeam === null || selectedHomeTeam === null || disableButton" > 
            OK
          </b-btn>        
-         <b-btn class="float-right cancelButton" @click="$refs.createMatchModal.hide()">
+         <b-btn class="float-right cancelButton" :disabled="disableButton" @click="$refs.createMatchModal.hide()">
            Annuler
          </b-btn>
        </div>
@@ -126,6 +126,7 @@ export default {
       sports: [],
       leagues: [],
       teams: [],
+      disableButton: false,
 
       weekLabel: "",
       currentDate: new Date(),
@@ -340,6 +341,7 @@ export default {
     },
 
     addSchedule: function() {
+      this.disableButton = true;
       let options = {
         arbitre: "test1234",
         dateDebut: this.selectedSchedule.raw.startEpoch,
@@ -374,6 +376,7 @@ export default {
         .then(response => {
           if (response) {
             that.$refs.createMatchModal.hide();
+            this.disableButton = false;
             that.schedules.push(that.selectedSchedule);
             that.$refs.calendar.fireMethod(
               "updateSchedule",
@@ -382,6 +385,7 @@ export default {
               that.selectedSchedule
             );
           } else {
+            this.disableButton = false;
             throw new Error("Unable to create matchs");
           }
         })
@@ -391,18 +395,7 @@ export default {
     },
 
     deleteSchedule: function() {
-      let scheduleIndex = this.schedules.findIndex(
-        schedule => schedule.id === this.selectedSchedule.id
-      );
-      if (scheduleIndex != -1) {
-        this.schedules.splice(scheduleIndex, 1);
-        this.$refs.calendar.fireMethod(
-          "deleteSchedule",
-          this.selectedSchedule.id,
-          this.selectedSchedule.calendarId
-        );
-      }
-
+      this.disableButton = true;
       let options = {
         params: {
           idMatch: this.selectedSchedule.raw.idMatch
@@ -413,7 +406,20 @@ export default {
         .then(response => {
           if (response) {
             this.$refs.updateMatchModal.hide();
+            this.disableButton = false;
+            let scheduleIndex = this.schedules.findIndex(
+              schedule => schedule.id === this.selectedSchedule.id
+            );
+            if (scheduleIndex != -1) {
+              this.schedules.splice(scheduleIndex, 1);
+              this.$refs.calendar.fireMethod(
+                "deleteSchedule",
+                this.selectedSchedule.id,
+                this.selectedSchedule.calendarId
+              );
+            }
           } else {
+            this.disableButton = false;
             throw new Error("Unable to get matchs");
           }
         })
