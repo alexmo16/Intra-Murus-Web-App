@@ -223,12 +223,15 @@ export default {
 
   watch: {
     "$parent.$refs.filter.selectedSeason": function() {
+      this.items = [];
       this._getFilteredApprobations();
     },
     "$parent.$refs.filter.selectedSport": function() {
+      this.items = [];
       this._getFilteredApprobations();
     },
     "$parent.$refs.filter.selectedLeague": function() {
+      this.teams = [];
       this._getFilteredApprobations();
     }
   }
