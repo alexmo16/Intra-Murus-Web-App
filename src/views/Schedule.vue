@@ -229,7 +229,7 @@ export default {
       axios
         .put("/bs/api/matchs/updateMatch", options)
         .then(response => {
-          if (response && response.data) {
+          if (response) {
             that.$refs.calendar.fireMethod(
               "updateSchedule",
               event.schedule.id,
@@ -374,9 +374,10 @@ export default {
       axios
         .post("/bs/api/matchs/createMatch", options)
         .then(response => {
-          if (response) {
+          if (response && response.data) {
             that.$refs.createMatchModal.hide();
             this.disableButton = false;
+            that.selectedSchedule.raw.idMatch = response.data.idMatch;
             that.schedules.push(that.selectedSchedule);
             that.$refs.calendar.fireMethod(
               "updateSchedule",
